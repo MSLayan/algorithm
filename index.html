@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>نشاط الخوارزميات | Algorithm Activity</title>
+  <style>
+    :root { --bg:#0b0f13; --card:#121821; --text:#e7edf5; --muted:#9fb0c3; --accent:#66d9ed; --ok:#22c55e; --warn:#f59e0b; --err:#ef4444; }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;background:linear-gradient(180deg,#0b0f13,#0e131a);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,"Noto Naskh Arabic",Tahoma,Arial,sans-serif}
+    header{padding:20px 16px;text-align:center;border-bottom:1px solid #1e2733;background:#0c1219;position:sticky;top:0;z-index:10}
+    h1{margin:0;font-size:clamp(20px,2.5vw,28px)}
+    .container{max-width:1100px;margin:20px auto;padding:0 16px}
+    .grid{display:grid;gap:16px}
+    @media (min-width:900px){.grid{grid-template-columns:1.2fr 1fr}}
+    .card{background:var(--card);border:1px solid #1f2a37;border-radius:16px;padding:16px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+    .card h2{margin:0 0 8px;font-size:18px}
+    label{display:block;margin:8px 0 6px;color:var(--muted);font-size:14px}
+    select,input,textarea,button{width:100%;padding:10px 12px;border-radius:12px;border:1px solid #273445;background:#0e1520;color:var(--text)}
+    button{cursor:pointer;border:1px solid #2c3a4d}
+    button.primary{background:linear-gradient(180deg,#0fa3b1,#008aa1);border:none}
+    button.ghost{background:#0e152000;border:1px dashed #344255}
+    .row{display:flex;gap:8px;flex-wrap:wrap}
+    .row > *{flex:1}
+    .pill{display:inline-flex;align-items:center;gap:8px;padding:8px 10px;border-radius:999px;border:1px solid #334155;background:#101827;font-size:13px}
+    .muted{color:var(--muted)}
+    .columns{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .zone{min-height:120px;border:2px dashed #334155;border-radius:14px;padding:12px;display:flex;flex-wrap:wrap;gap:8px;align-content:flex-start}
+    .item{user-select:none;padding:10px 12px;border-radius:12px;background:#0b1220;border:1px solid #2b3b52;box-shadow:0 4px 10px rgba(0,0,0,.25);cursor:grab}
+    .item.dragging{opacity:.6}
+    .zone.highlight{outline:2px solid var(--accent);outline-offset:2px}
+    .goal{display:flex;align-items:center;gap:8px;margin:6px 0;font-size:14px}
+    .goal .dot{width:8px;height:8px;border-radius:50%}
+    .goal.ok .dot{background:var(--ok)}
+    .goal.warn .dot{background:var(--warn)}
+    .goal.err .dot{background:var(--err)}
+    .flex{display:flex;gap:12px;flex-wrap:wrap}
+    .w-2{flex:2}
+    .w-1{flex:1}
+    .footer{margin-top:16px;display:flex;gap:8px;flex-wrap:wrap}
+    .kbd{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;background:#0c1320;border:1px solid #2a3a50;border-radius:8px;padding:2px 6px}
+    .tiny{font-size:12px}
+    .success{color:var(--ok)}
+    .danger{color:var(--err)}
+    .center{text-align:center}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>نشاط الخوارزميات التفاعلي (ديناميكي) • Dynamic Algorithm Builder</h1>
+    <div class="tiny muted">اختر موضوعًا ⇢ اسحب المكونات ⇢ افحص ⇢ احفظ • Pick a topic ⇢ drag steps ⇢ check ⇢ save</div>
+  </header>
+
+  <div class="container grid">
+
+    <!-- Left: Activity -->
+    <section class="card">
+      <h2>1) اختر الموضوع • Choose Topic</h2>
+      <div class="row">
+        <select id="topicSelect" aria-label="Topic">
+          <option value="sandwich">إعداد ساندوتش بسيط • Make a simple sandwich</option>
+          <option value="morning">روتين الصباح • Morning routine</option>
+          <option value="tea">تحضير شاي • Brew a cup of tea</option>
+          <option value="custom">مخصص • Custom</option>
+        </select>
+        <button id="loadPreset" class="primary">تحميل المكوّنات • Load Components</button>
+      </div>
+
+      <h2 style="margin-top:14px">2) رتّبي/رتّب الخطوات • Arrange Steps</h2>
+      <div class="columns">
+        <div>
+          <label>مكوّنات متاحة • Available Components</label>
+          <div id="pool" class="zone" aria-label="Available components" data-accept="item"></div>
+          <div class="row" style="margin-top:8px">
+            <input id="newComp" placeholder="أضيفي مكوّناً… / Add a component…" />
+            <button id="addComp">إضافة • Add</button>
+          </div>
+        </div>
+        <div>
+          <label>الخطوات (اسحبي هنا) • Steps (drop here)</label>
+          <div id="steps" class="zone" aria-label="Steps" data-accept="item"></div>
+          <div class="footer">
+            <button id="check" class="primary">تحقّق • Check</button>
+            <button id="clear" class="ghost">إعادة تعيين • Reset</button>
+            <button id="shuffle" class="ghost">خلط • Shuffle</button>
+          </div>
+        </div>
+      </div>
+
+      <h2 style="margin-top:14px">3) التقييم • Evaluation</h2>
+      <div id="goals"></div>
+
+      <h2 style="margin-top:14px">4) أدوات الذكاء الاصطناعي • AI Tools</h2>
+      <div class="footer">
+        <button id="hint" class="ghost">تلميح ذكي • Smart Hint</button>
+        <button id="genImg" class="ghost">صورة للناتج • Generate Image</button>
+      </div>
+      <div class="row" style="margin-top:8px">
+        <input id="aiEndpoint" placeholder="اكتبي رابط واجهة الذكاء الاصطناعي (POST) • e.g. https://your-app.vercel.app/api/generate-image"/>
+        <button id="saveEndpoint" class="ghost">حفظ الرابط • Save Endpoint</button>
+      </div>
+      <div id="aiOut" class="tiny muted" style="margin-top:6px"></div>
+      <img id="aiImage" alt="Generated result" style="margin-top:8px;max-width:100%;border-radius:12px;display:none"/>
+
+      <div class="footer">
+        <button id="save" title="Save to your browser">حفظ محلي • Save</button>
+      </div>
+    </section>
+
+    <!-- Right: Objectives & Instructions -->
+    <aside class="card">
+      <h2>أهداف الدرس • Lesson Objectives</h2>
+      <div class="goal" id="g1"><span class="dot"></span> أن تُرتّب الطالبة خطوات خوارزمية صحيحة • Student arranges steps into a valid algorithm.</div>
+      <div class="goal" id="g2"><span class="dot"></span> أن تميّز الطالبة بين المكوّنات والنتائج • Student distinguishes components vs. outputs.</div>
+      <div class="goal" id="g3"><span class="dot"></span> أن تتحقق الطالبة من صحة الحل وتصحّحه • Student validates and fixes the solution.</div>
+
+      <hr style="border-color:#1f2a37"/>
+      <h2>إرشادات سريعة • Quick How-To</h2>
+      <ul class="tiny muted">
+        <li>اسحبي العناصر من “المكوّنات” إلى “الخطوات”. • Drag items from “components” to “steps”.</li>
+        <li>استخدمي <span class="kbd">تحقّق</span> لرؤية التقييم. • Use <span class="kbd">Check</span> to get feedback.</li>
+        <li>احفظي العمل محليًا. • Save locally.</li>
+      </ul>
+
+      <div class="center" style="margin-top:10px">
+        <button id="print" class="ghost">طباعة/حفظ PDF • Print/Save PDF</button>
+      </div>
+    </aside>
+  </div>
+
+  <template id="itemTpl"><span class="item" draggable="true"></span></template>
+
+  <script>
+  const PRESETS = {
+    sandwich: { components: ['إحضار خبز • Get bread','وضع الحشوة • Add filling','إغلاق الساندوتش • Close sandwich','تقديم • Serve'], order: [0,1,2,3] },
+    morning: { components: ['الاستيقاظ • Wake up','غسل الوجه • Wash face','تناول الإفطار • Eat breakfast','الذهاب للمدرسة • Go to school'], order: [0,1,2,3] },
+    tea: { components: ['غلي الماء • Boil water','وضع الشاي • Add tea','النقع 3 دقائق • Steep 3 min','التقديم • Serve'], order: [0,1,2,3] }
+  };
+
+  const $ = s => document.querySelector(s);
+  const pool = $('#pool');
+  const steps = $('#steps');
+  const tpl = $('#itemTpl');
+  const goals = $('#goals');
+  const g1 = $('#g1'), g2 = $('#g2'), g3 = $('#g3');
+
+  function setGoal(el, state){
+    el.classList.remove('ok','warn','err');
+    if(state) el.classList.add(state);
+  }
+
+  function makeItem(label){
+    const node = tpl.content.firstElementChild.cloneNode(true);
+    node.textContent = label;
+    node.addEventListener('dragstart', e=>{
+      node.classList.add('dragging');
+      e.dataTransfer.setData('text/plain', label);
+    });
+    node.addEventListener('dragend', ()=> node.classList.remove('dragging'));
+    return node;
+  }
+
+  function enableDnD(zone){
+    zone.addEventListener('dragover', e=>{ e.preventDefault(); zone.classList.add('highlight'); });
+    zone.addEventListener('dragleave', ()=> zone.classList.remove('highlight'));
+    zone.addEventListener('drop', e=>{
+      e.preventDefault(); zone.classList.remove('highlight');
+      const dragging = document.querySelector('.item.dragging');
+      if(dragging && dragging.parentElement!==zone){ zone.appendChild(dragging); updateState(); }
+    });
+  }
+
+  enableDnD(pool); enableDnD(steps);
+
+  function loadPreset(key){
+    const p = PRESETS[key] || {components:[], order:[]};
+    pool.innerHTML = ''; steps.innerHTML = ''; goals.innerHTML = '';
+    p.components.forEach(c=> pool.appendChild(makeItem(c)) );
+    setGoal(g1); setGoal(g2); setGoal(g3);
+    localStorage.setItem('alg_topic', key);
+    localStorage.setItem('alg_components', JSON.stringify(p.components));
+    localStorage.setItem('alg_order', JSON.stringify(p.order));
+  }
+
+  const urlPreset = new URLSearchParams(location.search).get('preset');
+  if(urlPreset){ $('#topicSelect').value = urlPreset; loadPreset(urlPreset); }
+  else { loadPreset('sandwich'); }
+
+  $('#addComp').onclick = ()=>{
+    const v = $('#newComp').value.trim();
+    if(!v) return; pool.appendChild(makeItem(v)); $('#newComp').value=''; updateState();
+  };
+
+  $('#loadPreset').onclick = ()=>{ loadPreset($('#topicSelect').value); };
+
+  $('#clear').onclick = ()=>{ [...steps.children].forEach(ch=> pool.appendChild(ch)); updateState(); };
+  $('#shuffle').onclick = ()=>{
+    const arr = [...pool.children];
+    for(let i=arr.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]]; }
+    arr.forEach(n=> pool.appendChild(n)); updateState();
+  };
+
+  // Check / Evaluation
+  $('#check').onclick = ()=>{
+    const topic = localStorage.getItem('alg_topic') || 'custom';
+    let order = JSON.parse(localStorage.getItem('alg_order')||'[]');
+    const components = JSON.parse(localStorage.getItem('alg_components')||'[]');
+    const attempt = [...steps.children].map(n=> n.textContent);
+
+    goals.innerHTML='';
+
+    if(topic === 'custom' && order.length === 0 && attempt.length > 0){
+      // Use the first correct arrangement as reference (teacher sets it once)
+      order = attempt.map((_,i)=> i);
+      localStorage.setItem('alg_order', JSON.stringify(order));
+    }
+
+    const attemptIdx = attempt.map(lbl=> components.indexOf(lbl));
+    const okOrder = attemptIdx.length===order.length && attemptIdx.every((v,i)=> v===order[i]);
+    setGoal(g1, okOrder? 'ok' : attemptIdx.length? 'warn' : 'err');
+
+    const distinct = new Set(attempt).size===attempt.length;
+    const enough = attempt.length>=2;
+    setGoal(g2, (distinct && enough)? 'ok' : (attempt.length? 'warn':'err'));
+
+    const ul = document.createElement('ul'); ul.className='tiny';
+    if(okOrder) ul.innerHTML += `<li class="success">✔ الترتيب صحيح • Order is correct.</li>`;
+    else ul.innerHTML += `<li class="danger">✖ الترتيب غير صحيح • Order is incorrect.</li>`;
+    if(!distinct) ul.innerHTML += `<li class="danger">✖ يوجد عناصر مكررة • Duplicate items found.</li>`;
+    if(!enough) ul.innerHTML += `<li class="danger">✖ أضف/أضيفي مزيدًا من الخطوات • Add more steps.</li>`;
+    if(!attempt.length) ul.innerHTML += `<li>اسحبي عناصر إلى مساحة الخطوات أولاً • Drag items to the Steps area.</li>`;
+    goals.appendChild(ul);
+
+    setGoal(g3, attempt.length? 'ok':'err');
+  };
+
+  $('#save').onclick = ()=>{
+    const data = {
+      topic: localStorage.getItem('alg_topic')||'custom',
+      components: [...pool.children, ...steps.children].map(n=> n.textContent),
+      steps: [...steps.children].map(n=> n.textContent)
+    };
+    localStorage.setItem('alg_save', JSON.stringify(data));
+    alert('تم الحفظ محليًا • Saved locally.');
+  };
+
+  function updateState(){}
+
+  // ====== Smart Hint ======
+  function getReference(){
+    const topic = localStorage.getItem('alg_topic') || 'custom';
+    let order = JSON.parse(localStorage.getItem('alg_order')||'[]');
+    const components = JSON.parse(localStorage.getItem('alg_components')||'[]');
+    const attempt = [...steps.children].map(n=> n.textContent);
+    return {topic, order, components, attempt};
+  }
+
+  function buildHint(){
+    const {order, components, attempt} = getReference();
+    const attemptIdx = attempt.map(lbl=> components.indexOf(lbl));
+    if(!order || order.length===0) return 'لا يوجد ترتيب مرجعي بعد — حددي الحل الصحيح أولاً ثم أعيدي المحاولة.';
+    if(attemptIdx.length!==order.length) return 'الخطوات غير مكتملة. أضيفي/أضف مزيدًا من العناصر أو احذفي الزائد لتطابق عدد خطوات الحل.';
+    for(let i=0;i<order.length;i++){
+      if(attemptIdx[i]!==order[i]){
+        const shouldLabel = components[ order[i] ];
+        const hasLabel = attempt[i];
+        return `الموضع ${i+1}: يفترض أن يكون "${shouldLabel}" بدلًا من "${hasLabel}".`;
+      }
+    }
+    return 'ممتاز! الترتيب صحيح بالكامل.';
+  }
+
+  $('#hint').onclick = ()=>{
+    const msg = buildHint();
+    $('#aiOut').textContent = msg;
+  };
+
+  // ====== Image Generation (requires AI endpoint) ======
+  function promptFromSteps(){
+    const topic = localStorage.getItem('alg_topic') || 'custom';
+    const attempt = [...steps.children].map(n=> n.textContent);
+    const clean = s=> s.replace(/•/g,'-').replace(/</g,'').replace(/>/g,'');
+    const stepsText = attempt.map((t,i)=> `${i+1}. ${clean(t)}`).join(', ');
+    return `Create a clean, classroom-friendly flat illustration summarizing the final outcome of the algorithm. Topic: ${topic}. Steps: ${stepsText}. Neutral background, simple shapes, no hands or tools.`;
+  }
+
+  async function generateImage(){
+    let endpoint = localStorage.getItem('ai_image_endpoint');
+    // Fallback: same-origin function if hosted on Vercel with the API
+    if(!endpoint) endpoint = location.origin + '/api/generate-image';
+    const prompt = promptFromSteps();
+    const img = $('#aiImage');
+
+    if(!/^https?:\/\//.test(endpoint)) { $('#aiOut').textContent = 'الرجاء تحديد رابط صحيح يبدأ بـ http/https.'; return; }
+    try{
+      const resp = await fetch(endpoint, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({prompt})});
+      const data = await resp.json();
+      if(data && data.imageUrl){ $('#aiImage').src = data.imageUrl; $('#aiImage').style.display='block'; $('#aiOut').textContent = 'تم توليد صورة فعلية عبر الذكاء الاصطناعي.'; }
+      else { $('#aiOut').textContent = 'الخادم لم يُرجع imageUrl صالح. ' + (data?.error || ''); }
+    }catch(e){ $('#aiOut').textContent = 'تعذر الاتصال بالخادم: '+ e.message; }
+  }
+
+  $('#genImg').onclick = ()=>{ generateImage(); };
+
+  $('#print').onclick = ()=> window.print();
+
+  // حفظ/تحميل رابط الخادم من localStorage
+  (function(){
+    const saved = localStorage.getItem('ai_image_endpoint') || '';
+    const input = document.getElementById('aiEndpoint');
+    if(input){ input.value = saved; }
+    document.getElementById('saveEndpoint').onclick = ()=>{
+      const v = input.value.trim();
+      if(!v){ localStorage.removeItem('ai_image_endpoint'); $('#aiOut').textContent = 'تم حذف الرابط. سيتم استخدام المسار الافتراضي /api/generate-image إن وجد.'; return; }
+      if(!/^https?:\/\//.test(v)){ $('#aiOut').textContent = 'الرجاء إدخال رابط يبدأ بـ http/https.'; return; }
+      localStorage.setItem('ai_image_endpoint', v);
+      $('#aiOut').textContent = 'تم حفظ رابط خادم الذكاء الاصطناعي.';
+    };
+  })();
+  </script>
+</body>
+</html>
