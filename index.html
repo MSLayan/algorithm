@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>نشاط الخوارزميات — نسخة مبسطة (بدون API)</title>
+  <style>
+/* Happy Classroom Theme (مختصرة) */
+*{box-sizing:border-box}
+:root{
+  --bg:#fff9fb; --card:#ffffff; --ink:#222; --muted:#6b7280;
+  --brand:#8b5cf6; --brand-2:#f472b6; --ok:#10b981; --warn:#f59e0b;
+  --ring: 0 10px 30px rgba(139,92,246,.15);
+}
+html,body{height:100%}
+body{
+  font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  margin:0; padding:0;
+  background:
+    radial-gradient(1200px 400px at -10% -10%, #ffe4f0 0, transparent 50%),
+    radial-gradient(900px 400px at 110% -10%, #e9e0ff 0, transparent 50%),
+    var(--bg);
+  color:var(--ink);
+}
+header,footer{background: linear-gradient(90deg, #fef6ff, #fff7fb);border-bottom:1px solid #f1e8ff;padding:18px 24px}
+footer{border-top:1px solid #f1e8ff; border-bottom:none; color:var(--muted)}
+
+h1{margin:6px 0 2px; font-weight:900; letter-spacing:.2px;
+  background: linear-gradient(90deg, var(--brand), var(--brand-2));
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+}
+h2{margin:4px 0 10px; font-weight:800}
+
+main{display:grid; grid-template-columns:repeat(auto-fit,minmax(340px,1fr)); gap:16px; padding:16px; align-items:start}
+.panel{background:var(--card); border:1px solid #f1e8ff; border-radius:16px; padding:16px; box-shadow: var(--ring)}
+
+/* عناصر تحكم */
+.controls{display:grid; gap:8px}
+.controls .row{display:grid; gap:6px}
+.addons{display:flex; flex-wrap:wrap; gap:8px}
+.addon{display:inline-flex; align-items:center; gap:6px; padding:8px 10px; border:1px dashed #d9ccff; border-radius:999px; background:#fbfaff; cursor:pointer}
+.addon input{accent-color: var(--brand)}
+
+/* المكونات والسحب */
+.list{display:flex;flex-wrap:wrap;gap:10px;min-height:56px}
+.item{background:#f4f0ff; border:1px dashed #c9b8ff; border-radius:999px; padding:10px 14px; cursor:grab; font-weight:700; display:flex; align-items:center; gap:10px; transition:.15s transform ease, .15s box-shadow ease, .15s background ease; box-shadow: var(--ring)}
+.item:hover{ transform: translateY(-2px); background:#efe7ff }
+.item:active{ cursor:grabbing }
+.item .emoji{width:28px;height:28px;border-radius:50%; display:grid;place-items:center;font-size:18px; background:#ffffff;border:1px solid #e9ddff}
+.item.bad{ border-color:#fecaca; background:#fff1f2 }
+.item.good{ border-color:#bbf7d0; background:#f0fdf4 }
+
+.dropzone{min-height:260px; border:2px dashed #e5d8ff; border-radius:16px; padding:14px; display:flex; flex-direction:column; gap:10px; justify-content:flex-end; background:linear-gradient(180deg,#fff,#fff7ff); position:relative}
+.dropzone .dz-item{background:#fffdf5; border:1px solid #ffe4a3; border-radius:14px; padding:10px 12px; display:flex; align-items:center; gap:10px; font-weight:700; box-shadow: 0 8px 20px rgba(245,158,11,.10)}
+.dropzone .dz-item .emoji{width:28px;height:28px;border-radius:50%;display:grid;place-items:center; background:#fff;border:1px solid #ffe2b0;font-size:18px}
+.dropzone .hint{color:#9aa0aa;text-align:center;margin:36px 0}
+
+.actions{margin-top:10px;display:flex;gap:10px;flex-wrap:wrap}
+button{border:1px solid #e7defc; background:linear-gradient(180deg,#f5f1ff,#efe8ff); border-radius:12px; padding:10px 14px; font-weight:800; cursor:pointer; box-shadow: var(--ring)}
+button.primary{background: linear-gradient(180deg,#a78bfa,#8b5cf6); color:#fff; border-color:#8b5cf6}
+button.success{background: linear-gradient(180deg,#34d399,#10b981); color:#fff; border-color:#10b981}
+button.warn{background: linear-gradient(180deg,#fbbf24,#f59e0b); color:#fff; border-color:#f59e0b}
+
+label{display:block;margin:6px 0 4px}
+textarea,input,select{width:100%; padding:10px; border-radius:12px; border:1px solid #e7defc; background:#fff}
+
+.kbd{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; padding:2px 6px; border:1px solid #e5e7eb; border-bottom-width:2px; border-radius:6px; background:#fff}
+.toast{position:fixed; inset-inline:0; bottom:20px; margin-inline:auto; width:max-content; background:#111827; color:#fff; padding:10px 14px; border-radius:999px; box-shadow:0 10px 30px rgba(0,0,0,.25); font-weight:700; opacity:0; transform:translateY(10px); transition:.25s; z-index:9999}
+.toast.show{opacity:1; transform:translateY(0)}
+
+.helper{font-size:13px;color:var(--muted)}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>نشاط الخوارزميات — رتّبي الخطوات</h1>
+    <p>اسحبي المكوّنات لترتيبها من <strong>الأسفل إلى الأعلى</strong>، ثم استخدمي «تحقّق من الترتيب» للتغذية الراجعة الفورية. توليد الصور يتم عبر <strong>ChatGPT مباشرة</strong> باستخدام البرومبت المُنشأ أدناه.</p>
+  </header>
+
+  <main>
+    <!-- (1) إعداد النشاط -->
+    <section class="panel">
+      <h2>إعداد النشاط</h2>
+      <div class="controls">
+        <div class="row">
+          <label for="recipe">الوصفة الجاهزة</label>
+          <select id="recipe" aria-label="اختر وصفة"></select>
+        </div>
+        <div class="row" id="customBuilder" style="display:none">
+          <label>الوضع المخصص — أضيفي عناصر باللغة العربية (اختياري اكتبي مفتاحًا إنجليزيًا)</label>
+          <div class="actions" style="gap:6px">
+            <input id="addAr" placeholder="مثال: خبز سفلي / التحقق من الرصيد"/>
+            <input id="addEn" placeholder="English key (optional)"/>
+            <button id="addItem" class="primary">إضافة عنصر</button>
+            <button id="setAsAnswer" title="تعريف الترتيب الحالي كحل صحيح">تعريف الحل الصحيح</button>
+          </div>
+          <div class="helper">نصيحة: رتّبي العناصر في منطقة الترتيب ثم اضغطي «تعريف الحل الصحيح» ليستخدمه زر «تحقّق» لاحقًا.</div>
+        </div>
+        <div class="row">
+          <label>إضافات اختيارية (تظهر ضمن قائمة المكونات)</label>
+          <div id="addons" class="addons" aria-label="إضافات"></div>
+        </div>
+        <div class="actions">
+          <button id="applySetup" class="primary">تطبيق الإعداد</button>
+          <button id="resetAll" title="إعادة تعيين كل شيء"><span class="kbd">⟲</span> إعادة تعيين</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- (2) مكونات النشاط -->
+    <section class="panel">
+      <h2>مكونات النشاط (قابلة للسحب)</h2>
+      <div id="ingredients" class="list" aria-label="قائمة المكونات"></div>
+      <div class="actions">
+        <button id="shuffle">خلّطي</button>
+        <button id="resetPool">استرجاع المكوّنات</button>
+      </div>
+    </section>
+
+    <!-- (3) الترتيب الفعلي -->
+    <section class="panel dropzone-panel">
+      <h2>الترتيب الفعلي (من الأسفل ↑ إلى الأعلى)</h2>
+      <div id="dropzone" class="dropzone" aria-label="منطقة ترتيب الطبقات">
+        <p class="hint">اسحبي العناصر هنا</p>
+      </div>
+      <div class="actions">
+        <button id="checkOrder" class="warn">تحقّق من الترتيب</button>
+        <button id="showAnswer">إظهار الترتيب الصحيح</button>
+        <button id="clearDropzone">تفريغ</button>
+        <button id="generatePrompt" class="success">إنشاء برومبت لـ ChatGPT</button>
+      </div>
+      <p id="score" aria-live="polite" style="color:var(--muted); margin:6px 0 0"></p>
+    </section>
+
+    <!-- (4) برومبت ChatGPT (للتوليد اليدوي) -->
+    <section class="panel">
+      <h2>توليد الصور عبر ChatGPT (انسخي البرومبت)</h2>
+      <label>English (to paste into ChatGPT Image)</label>
+      <textarea id="promptEn" rows="5" readonly></textarea>
+      <div class="actions">
+        <button class="copy" data-target="promptEn">Copy EN</button>
+        <button id="openChat">فتح ChatGPT ولصق البرومبت</button>
+      </div>
+      <label>العربية (للاستخدام داخل الصف/التوضيح)</label>
+      <textarea id="promptAr" rows="4" readonly></textarea>
+      <div class="actions"><button class="copy" data-target="promptAr">انسخ AR</button></div>
+      <div class="helper">لا توجد أي اتصالات خارجية — الزر أعلاه ينسخ البرومبت تلقائيًا ويفتح ChatGPT في تبويب جديد لتلصقيه هناك.</div>
+    </section>
+  </main>
+
+  <footer>
+    <p>© نسخة مبسطة — لا تحتوي أي ربط بواجهات خارجية.</p>
+  </footer>
+
+  <!-- سكربت التطبيق (لا يوجد أي استدعاء API) -->
+  <script>
+  /*****************************
+   *  بيانات الوصفات الجاهزة   *
+   *****************************/
+  const RECIPES = {
+    burger: {
+      nameAr: 'برقر', nameEn: 'classic burger',
+      ingredients: [
+        {key:'bottom bun', ar:'خبز سفلي', emoji:'🍞'},
+        {key:'lettuce', ar:'خس', emoji:'🥬'},
+        {key:'beef patty', ar:'لحم برقر', emoji:'🍖'},
+        {key:'cheese slice', ar:'جبن', emoji:'🧀'},
+        {key:'tomato', ar:'طماطم', emoji:'🍅'},
+        {key:'top bun', ar:'خبز علوي', emoji:'🍞'},
+      ],
+      correct: ['bottom bun','lettuce','beef patty','cheese slice','tomato','top bun']
+    },
+    grape: {
+      nameAr: 'ورق عنب', nameEn: 'grape leaves wrap',
+      ingredients: [
+        {key:'grape leaf', ar:'ورقة عنب', emoji:'🍃'},
+        {key:'rice filling', ar:'حشوة رز', emoji:'🍚'},
+        {key:'roll', ar:'لفّ/إغلاق', emoji:'🌀'},
+        {key:'stack in pot', ar:'رصّ في القدر', emoji:'🍲'},
+        {key:'add sauce', ar:'إضافة صلصة/مرق', emoji:'🥫'},
+        {key:'cook', ar:'طبخ/تسوية', emoji:'🔥'},
+      ],
+      correct: ['grape leaf','rice filling','roll','stack in pot','add sauce','cook']
+    },
+    morning: {
+      nameAr: 'روتين الصباح', nameEn: 'morning routine',
+      ingredients: [
+        {key:'wake up', ar:'استيقاظ', emoji:'⏰'},
+        {key:'wash face', ar:'غسل الوجه/الأسنان', emoji:'🪥'},
+        {key:'breakfast', ar:'إفطار', emoji:'🥣'},
+        {key:'pack bag', ar:'تجهيز الحقيبة', emoji:'🎒'},
+        {key:'get dressed', ar:'اللباس', emoji:'👕'},
+        {key:'go to school', ar:'الذهاب إلى المدرسة', emoji:'🏫'},
+      ],
+      correct: ['wake up','wash face','breakfast','pack bag','get dressed','go to school']
+    },
+    atm: {
+      nameAr: 'سحب من الصراف (ATM)', nameEn: 'ATM cash withdrawal',
+      ingredients: [
+        {key:'insert card', ar:'إدخال البطاقة', emoji:'💳'},
+        {key:'choose language', ar:'اختيار اللغة', emoji:'🌐'},
+        {key:'enter pin', ar:'إدخال الرقم السري', emoji:'🔢'},
+        {key:'select withdraw', ar:'اختيار سحب نقدي', emoji:'🏧'},
+        {key:'enter amount', ar:'تحديد المبلغ', emoji:'💵'},
+        {key:'take cash & card', ar:'استلام النقود والبطاقة/الإيصال', emoji:'🧾'},
+      ],
+      correct: ['insert card','choose language','enter pin','select withdraw','enter amount','take cash & card']
+    },
+    custom: {
+      nameAr: 'مخصص', nameEn: 'custom',
+      ingredients: [],
+      correct: [] // يضبط من المعلمة محليًا
+    }
+  };
+
+  const GLOBAL_ADDONS = [
+    {key:'onion', ar:'بصل', emoji:'🧅'},
+    {key:'cucumber', ar:'خيار', emoji:'🥒'},
+    {key:'ketchup', ar:'كاتشب', emoji:'🍅'},
+    {key:'mayo', ar:'مايونيز', emoji:'🥫'},
+    {key:'hot sauce', ar:'شطة', emoji:'🌶️'},
+  ];
+
+  /*****************************
+   * عناصر DOM
+   *****************************/
+  const recipeSelect = document.getElementById('recipe');
+  const addonsWrap   = document.getElementById('addons');
+  const applySetup   = document.getElementById('applySetup');
+  const resetAllBtn  = document.getElementById('resetAll');
+  const ingredients  = document.getElementById('ingredients');
+  const dropzone     = document.getElementById('dropzone');
+  const shuffleBtn   = document.getElementById('shuffle');
+  const resetPoolBtn = document.getElementById('resetPool');
+  const clearDZBtn   = document.getElementById('clearDropzone');
+  const checkBtn     = document.getElementById('checkOrder');
+  const showAnsBtn   = document.getElementById('showAnswer');
+  const scoreP       = document.getElementById('score');
+  const customWrap   = document.getElementById('customBuilder');
+  const addAr        = document.getElementById('addAr');
+  const addEn        = document.getElementById('addEn');
+  const addItemBtn   = document.getElementById('addItem');
+  const setAsAnswer  = document.getElementById('setAsAnswer');
+  const genPromptBtn = document.getElementById('generatePrompt');
+  const promptEn     = document.getElementById('promptEn');
+  const promptAr     = document.getElementById('promptAr');
+  const copyBtns     = document.querySelectorAll('.copy');
+
+  /*****************************
+   *   مساعدات واجهة
+   *****************************/
+  function showToast(msg='تم!'){
+    let t = document.querySelector('.toast');
+    if(!t){ t = document.createElement('div'); t.className = 'toast'; document.body.appendChild(t); }
+    t.textContent = msg; t.classList.add('show');
+    setTimeout(()=>t.classList.remove('show'), 1600);
+  }
+
+  function el(tag, props={}, ...children){
+    const e = document.createElement(tag);
+    Object.entries(props||{}).forEach(([k,v])=>{
+      if(k==='class') e.className = v;
+      else if(k==='dataset') Object.assign(e.dataset, v);
+      else if(k.startsWith('on') && typeof v==='function') e.addEventListener(k.substring(2), v);
+      else e.setAttribute(k,v);
+    });
+    for(const c of children){ if(c==null) continue; if(typeof c==='string') e.appendChild(document.createTextNode(c)); else e.appendChild(c); }
+    return e;
+  }
+
+  function shuffleArray(arr){ const a=[...arr]; for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+  function currentRecipe(){ return RECIPES[recipeSelect.value] || RECIPES.burger; }
+
+  /*****************************
+   *   إعداد النشاط
+   *****************************/
+  function renderSetup(){
+    // الوصفات
+    recipeSelect.innerHTML = '';
+    for(const [id,rec] of Object.entries(RECIPES)){
+      recipeSelect.appendChild(el('option', {value:id}, rec.nameAr));
+    }
+    // الإضافات
+    addonsWrap.innerHTML = '';
+    GLOBAL_ADDONS.forEach(a=>{
+      const id = `addon-${a.key}`;
+      const chip = el('label', {class:'addon', for:id},
+        el('input', {type:'checkbox', id, 'data-key':a.key}),
+        el('span', {}, `${a.emoji} ${a.ar}`)
+      );
+      addonsWrap.appendChild(chip);
+    });
+  }
+
+  /*****************************
+   *   المكوّنات (القابلة للسحب)
+   *****************************/
+  let poolSnapshot = [];
+  function buildPool(){
+    const base = currentRecipe().ingredients.map(it=>({...it, origin:'base'}));
+    const addonKeys = [...addonsWrap.querySelectorAll('input:checked')].map(inp=>inp.dataset.key);
+    const extras = GLOBAL_ADDONS.filter(a=>addonKeys.includes(a.key)).map(it=>({...it, origin:'addon'}));
+    const pool = [...base, ...extras];
+    renderPool(pool);
+    poolSnapshot = pool;
+    customWrap.style.display = (recipeSelect.value==='custom') ? 'block' : 'none';
+  }
+
+  function renderPool(items){
+    ingredients.innerHTML = '';
+    items.forEach(it=>{
+      const node = el('div', {class:'item', draggable:'true', role:'button', tabindex:'0', dataset:{en:it.key, ar:it.ar}},
+        el('span', {class:'emoji'}, it.emoji || '🔹'), ` ${it.ar}`
+      );
+      enableDrag(node); ingredients.appendChild(node);
+    });
+  }
+  function restorePool(){ renderPool(poolSnapshot); }
+
+  // إضافة عنصر مخصص
+  addItemBtn.addEventListener('click', ()=>{
+    if(recipeSelect.value!=='custom'){ showToast('بدّلي إلى "مخصص" أولًا'); return; }
+    const ar = (addAr.value||'').trim();
+    const en = (addEn.value||ar).trim() || 'custom-item';
+    if(!ar){ showToast('أدخلي اسم العنصر بالعربية'); return; }
+    const item = {key:en, ar, emoji:'🔹'};
+    poolSnapshot.push(item);
+    renderPool(poolSnapshot);
+    addAr.value=''; addEn.value='';
+    showToast('تمت الإضافة');
+  });
+
+  // حفظ الترتيب الحالي كحل صحيح للوضع المخصص
+  setAsAnswer.addEventListener('click', ()=>{
+    if(recipeSelect.value!=='custom'){ showToast('هذه الوظيفة للوضع المخصص فقط'); return; }
+    const arr = getDZOrder();
+    localStorage.setItem('custom_correct', JSON.stringify(arr));
+    showToast('تم تعريف الحل الصحيح');
+  });
+
+  /*****************************
+   *   السحب والإفلات
+   *****************************/
+  function enableDrag(node){
+    node.addEventListener('dragstart', (e)=>{ e.dataTransfer.setData('text/plain', JSON.stringify(node.dataset)); setTimeout(()=>node.classList.add('dragging'),0); });
+    node.addEventListener('dragend', ()=> node.classList.remove('dragging'));
+    node.addEventListener('keydown', (e)=>{ if(e.key==='Enter' || e.key===' '){ addToDropzone(node.dataset); showToast('أُضيفت للطبقات'); } });
+  }
+  dropzone.addEventListener('dragover', (e)=>{ e.preventDefault(); dropzone.classList.add('over'); });
+  dropzone.addEventListener('dragleave', ()=> dropzone.classList.remove('over'));
+  dropzone.addEventListener('drop', (e)=>{ e.preventDefault(); dropzone.classList.remove('over'); try{ const data = JSON.parse(e.dataTransfer.getData('text/plain')); addToDropzone(data);}catch{} });
+
+  function addToDropzone(data){
+    const node = el('div', {class:'dz-item', draggable:'true', dataset:{en:data.en, ar:data.ar}},
+      el('span', {class:'emoji'}, '🍽️'), ` ${data.ar}`
+    );
+    node.addEventListener('dragstart', (e)=>{ e.dataTransfer.setData('text/plain', 'reorder'); node.classList.add('dragging'); });
+    node.addEventListener('dragend', ()=> node.classList.remove('dragging'));
+    dropzone.appendChild(node);
+    dropzone.querySelector('.hint')?.remove();
+
+    const items = [...dropzone.querySelectorAll('.dz-item')];
+    items.forEach(it=>{
+      it.addEventListener('dragover', (e)=>{
+        e.preventDefault();
+        const dragging = dropzone.querySelector('.dz-item.dragging');
+        if(!dragging || dragging===it) return;
+        dropzone.insertBefore(dragging, it);
+      });
+    });
+  }
+
+  function getDZOrder(){ return [...dropzone.querySelectorAll('.dz-item')].map(n=>n.dataset.en); }
+  function getDZOrderAr(){ return [...dropzone.querySelectorAll('.dz-item')].map(n=>n.dataset.ar); }
+  function clearDropzone(){ dropzone.innerHTML = '<p class="hint">اسحبي العناصر هنا</p>'; scoreP.textContent = ''; }
+
+  /*****************************
+   *   التحقّق/التغذية الراجعة
+   *****************************/
+  function getCorrect(){
+    if(recipeSelect.value==='custom'){
+      try { return JSON.parse(localStorage.getItem('custom_correct')||'[]'); } catch { return []; }
+    }
+    return currentRecipe().correct;
+  }
+
+  function checkOrder(){
+    const target = getCorrect();
+    const actual = getDZOrder();
+    if(actual.length===0){ showToast('ضعي بعض الطبقات أولاً'); return; }
+    if(target.length===0 && recipeSelect.value==='custom'){
+      scoreP.textContent = 'لم يتم تعريف حل صحيح بعد للوضع المخصص — استخدمي "تعريف الحل الصحيح".'; return;
+    }
+    const nodes = [...dropzone.querySelectorAll('.dz-item')];
+    let correct = 0;
+    nodes.forEach((n,i)=>{
+      n.classList.remove('good','bad');
+      if(target[i]===actual[i]){ n.classList.add('good'); correct++; }
+      else n.classList.add('bad');
+    });
+    const pct = Math.round((correct/target.length)*100);
+    scoreP.textContent = `النتيجة: ${correct} / ${target.length} (${pct}٪) — ${(correct===target.length)?'ترتيب صحيح! ✅':'حاولي تحسين الترتيب 😊'}`;
+  }
+  function showAnswer(){
+    const correct = getCorrect();
+    if(recipeSelect.value==='custom' && correct.length===0){ showToast('لا يوجد حل معرف بعد'); return; }
+    clearDropzone();
+    const src = [...(currentRecipe().ingredients||[]), ...GLOBAL_ADDONS, ...poolSnapshot];
+    correct.forEach(key=>{ const found = src.find(x=>x.key===key); if(found) addToDropzone({en:found.key, ar:found.ar}); });
+  }
+
+  /*****************************
+   *  توليد برومبت لِـ ChatGPT
+   *****************************/
+  function generatePrompt(){
+    const rec = currentRecipe();
+    const enLayers = getDZOrder();
+    const arLayers = getDZOrderAr();
+    if(enLayers.length===0){ showToast('رتّبي بعض الطبقات أولاً'); return; }
+
+    const topic = rec.nameEn || 'custom';
+    const en = `Create a clean, classroom-friendly flat illustration of ${topic}. Show layers bottom-to-top in this exact order: ${enLayers.join(', ')}. Neutral background, simple shapes, soft shadows.`;
+    const ar = `ولّدي صورة ${rec.nameAr} بترتيب من الأسفل إلى الأعلى: ${arLayers.join('، ')}. بأسلوب توضيحي صفي وخلفية بسيطة.`;
+
+    document.getElementById('promptEn').value = en;
+    document.getElementById('promptAr').value = ar;
+    showToast('تم إنشاء البرومبت! انسخي النص وألصقيه في ChatGPT');
+  }
+
+  /*****************************
+   *   الأحداث والتشغيل
+   *****************************/
+  function bindEvents(){
+    applySetup.addEventListener('click', ()=>{ buildPool(); clearDropzone(); showToast('تم تطبيق الإعداد'); });
+    resetAllBtn.addEventListener('click', ()=>{ [...addonsWrap.querySelectorAll('input')].forEach(i=>i.checked=false); recipeSelect.value='burger'; buildPool(); clearDropzone(); localStorage.removeItem('custom_correct'); showToast('تمت إعادة التعيين'); });
+    shuffleBtn.addEventListener('click', ()=>{ const items=[...ingredients.querySelectorAll('.item')].map(n=>({en:n.dataset.en, ar:n.dataset.ar, emoji:n.querySelector('.emoji')?.textContent||'🔹'})); renderPool(shuffleArray(items)); });
+    resetPoolBtn.addEventListener('click', restorePool);
+    clearDZBtn.addEventListener('click', clearDropzone);
+    checkBtn.addEventListener('click', checkOrder);
+    showAnsBtn.addEventListener('click', showAnswer);
+    genPromptBtn.addEventListener('click', generatePrompt);
+    document.querySelectorAll('.copy').forEach(btn=> btn.addEventListener('click', ()=>{ const id=btn.dataset.target; const ta=document.getElementById(id); if(!ta) return; ta.select(); document.execCommand('copy'); showToast('Copied!'); }));
+    const openBtn = document.getElementById('openChat');
+    if(openBtn){
+      openBtn.addEventListener('click', ()=>{
+        const ta = document.getElementById('promptEn');
+        if(ta && ta.value.trim()){
+          ta.select(); document.execCommand('copy');
+          showToast('تم نسخ البرومبت!');
+        } else {
+          showToast('أنشئي البرومبت أولاً');
+        }
+        window.open('https://chat.openai.com/', '_blank');
+      });
+    }
+  });
+    resetAllBtn.addEventListener('click', ()=>{ [...addonsWrap.querySelectorAll('input')].forEach(i=>i.checked=false); recipeSelect.value='burger'; buildPool(); clearDropzone(); localStorage.removeItem('custom_correct'); showToast('تمت إعادة التعيين'); });
+    shuffleBtn.addEventListener('click', ()=>{ const items=[...ingredients.querySelectorAll('.item')].map(n=>({en:n.dataset.en, ar:n.dataset.ar, emoji:n.querySelector('.emoji')?.textContent||'🔹'})); renderPool(shuffleArray(items)); });
+    resetPoolBtn.addEventListener('click', restorePool);
+    clearDZBtn.addEventListener('click', clearDropzone);
+    checkBtn.addEventListener('click', checkOrder);
+    showAnsBtn.addEventListener('click', showAnswer);
+    genPromptBtn.addEventListener('click', generatePrompt);
+    document.querySelectorAll('.copy').forEach(btn=> btn.addEventListener('click', ()=>{ const id=btn.dataset.target; const ta=document.getElementById(id); if(!ta) return; ta.select(); document.execCommand('copy'); showToast('Copied!'); }));
+  }
+
+  window.addEventListener('DOMContentLoaded', ()=>{ renderSetup(); recipeSelect.value='burger'; buildPool(); bindEvents(); });
+  </script>
+
+  <!-- عنصر التوست -->
+  <div class="toast" aria-live="polite"></div>
+</body>
+</html>
