@@ -206,11 +206,7 @@ textarea,input,select{width:100%; padding:10px; border-radius:12px; border:1px s
       ],
       correct: ['insert card','choose language','enter pin','select withdraw','enter amount','take cash & card']
     },
-    custom: {
-      nameAr: 'مخصص', nameEn: 'custom',
-      ingredients: [],
-      correct: [] // يضبط من المعلمة محليًا
-    }
+    custom: { nameAr: 'مخصص', nameEn: 'custom', ingredients: [], correct: [] }
   };
 
   const GLOBAL_ADDONS = [
@@ -244,7 +240,6 @@ textarea,input,select{width:100%; padding:10px; border-radius:12px; border:1px s
   const genPromptBtn = document.getElementById('generatePrompt');
   const promptEn     = document.getElementById('promptEn');
   const promptAr     = document.getElementById('promptAr');
-  const copyBtns     = document.querySelectorAll('.copy');
 
   /*****************************
    *   مساعدات واجهة
@@ -275,12 +270,10 @@ textarea,input,select{width:100%; padding:10px; border-radius:12px; border:1px s
    *   إعداد النشاط
    *****************************/
   function renderSetup(){
-    // الوصفات
     recipeSelect.innerHTML = '';
     for(const [id,rec] of Object.entries(RECIPES)){
       recipeSelect.appendChild(el('option', {value:id}, rec.nameAr));
     }
-    // الإضافات
     addonsWrap.innerHTML = '';
     GLOBAL_ADDONS.forEach(a=>{
       const id = `addon-${a.key}`;
@@ -301,8 +294,7 @@ textarea,input,select{width:100%; padding:10px; border-radius:12px; border:1px s
     const addonKeys = [...addonsWrap.querySelectorAll('input:checked')].map(inp=>inp.dataset.key);
     const extras = GLOBAL_ADDONS.filter(a=>addonKeys.includes(a.key)).map(it=>({...it, origin:'addon'}));
     const pool = [...base, ...extras];
-    renderPool(pool);
-    poolSnapshot = pool;
+    renderPool(pool); poolSnapshot = pool;
     customWrap.style.display = (recipeSelect.value==='custom') ? 'block' : 'none';
   }
 
@@ -324,10 +316,8 @@ textarea,input,select{width:100%; padding:10px; border-radius:12px; border:1px s
     const en = (addEn.value||ar).trim() || 'custom-item';
     if(!ar){ showToast('أدخلي اسم العنصر بالعربية'); return; }
     const item = {key:en, ar, emoji:'🔹'};
-    poolSnapshot.push(item);
-    renderPool(poolSnapshot);
-    addAr.value=''; addEn.value='';
-    showToast('تمت الإضافة');
+    poolSnapshot.push(item); renderPool(poolSnapshot);
+    addAr.value=''; addEn.value=''; showToast('تمت الإضافة');
   });
 
   // حفظ الترتيب الحالي كحل صحيح للوضع المخصص
@@ -356,8 +346,7 @@ textarea,input,select{width:100%; padding:10px; border-radius:12px; border:1px s
     );
     node.addEventListener('dragstart', (e)=>{ e.dataTransfer.setData('text/plain', 'reorder'); node.classList.add('dragging'); });
     node.addEventListener('dragend', ()=> node.classList.remove('dragging'));
-    dropzone.appendChild(node);
-    dropzone.querySelector('.hint')?.remove();
+    dropzone.appendChild(node); dropzone.querySelector('.hint')?.remove();
 
     const items = [...dropzone.querySelectorAll('.dz-item')];
     items.forEach(it=>{
@@ -432,14 +421,33 @@ textarea,input,select{width:100%; padding:10px; border-radius:12px; border:1px s
    *****************************/
   function bindEvents(){
     applySetup.addEventListener('click', ()=>{ buildPool(); clearDropzone(); showToast('تم تطبيق الإعداد'); });
-    resetAllBtn.addEventListener('click', ()=>{ [...addonsWrap.querySelectorAll('input')].forEach(i=>i.checked=false); recipeSelect.value='burger'; buildPool(); clearDropzone(); localStorage.removeItem('custom_correct'); showToast('تمت إعادة التعيين'); });
-    shuffleBtn.addEventListener('click', ()=>{ const items=[...ingredients.querySelectorAll('.item')].map(n=>({en:n.dataset.en, ar:n.dataset.ar, emoji:n.querySelector('.emoji')?.textContent||'🔹'})); renderPool(shuffleArray(items)); });
+
+    resetAllBtn.addEventListener('click', ()=>{
+      [...addonsWrap.querySelectorAll('input')].forEach(i=>i.checked=false);
+      recipeSelect.value='burger'; buildPool(); clearDropzone();
+      localStorage.removeItem('custom_correct');
+      showToast('تمت إعادة التعيين');
+    });
+
+    shuffleBtn.addEventListener('click', ()=>{
+      const items=[...ingredients.querySelectorAll('.item')].map(n=>({
+        en:n.dataset.en, ar:n.dataset.ar, emoji:n.querySelector('.emoji')?.textContent||'🔹'
+      }));
+      renderPool(shuffleArray(items));
+    });
+
     resetPoolBtn.addEventListener('click', restorePool);
     clearDZBtn.addEventListener('click', clearDropzone);
     checkBtn.addEventListener('click', checkOrder);
     showAnsBtn.addEventListener('click', showAnswer);
     genPromptBtn.addEventListener('click', generatePrompt);
-    document.querySelectorAll('.copy').forEach(btn=> btn.addEventListener('click', ()=>{ const id=btn.dataset.target; const ta=document.getElementById(id); if(!ta) return; ta.select(); document.execCommand('copy'); showToast('Copied!'); }));
+
+    document.querySelectorAll('.copy').forEach(btn=> btn.addEventListener('click', ()=>{
+      const id=btn.dataset.target; const ta=document.getElementById(id);
+      if(!ta) return; ta.select(); document.execCommand('copy');
+      showToast('Copied!');
+    }));
+
     const openBtn = document.getElementById('openChat');
     if(openBtn){
       openBtn.addEventListener('click', ()=>{
@@ -447,21 +455,10 @@ textarea,input,select{width:100%; padding:10px; border-radius:12px; border:1px s
         if(ta && ta.value.trim()){
           ta.select(); document.execCommand('copy');
           showToast('تم نسخ البرومبت!');
-        } else {
-          showToast('أنشئي البرومبت أولاً');
-        }
+        } else { showToast('أنشئي البرومبت أولاً'); }
         window.open('https://chat.openai.com/', '_blank');
       });
     }
-  });
-    resetAllBtn.addEventListener('click', ()=>{ [...addonsWrap.querySelectorAll('input')].forEach(i=>i.checked=false); recipeSelect.value='burger'; buildPool(); clearDropzone(); localStorage.removeItem('custom_correct'); showToast('تمت إعادة التعيين'); });
-    shuffleBtn.addEventListener('click', ()=>{ const items=[...ingredients.querySelectorAll('.item')].map(n=>({en:n.dataset.en, ar:n.dataset.ar, emoji:n.querySelector('.emoji')?.textContent||'🔹'})); renderPool(shuffleArray(items)); });
-    resetPoolBtn.addEventListener('click', restorePool);
-    clearDZBtn.addEventListener('click', clearDropzone);
-    checkBtn.addEventListener('click', checkOrder);
-    showAnsBtn.addEventListener('click', showAnswer);
-    genPromptBtn.addEventListener('click', generatePrompt);
-    document.querySelectorAll('.copy').forEach(btn=> btn.addEventListener('click', ()=>{ const id=btn.dataset.target; const ta=document.getElementById(id); if(!ta) return; ta.select(); document.execCommand('copy'); showToast('Copied!'); }));
   }
 
   window.addEventListener('DOMContentLoaded', ()=>{ renderSetup(); recipeSelect.value='burger'; buildPool(); bindEvents(); });
