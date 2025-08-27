@@ -1,190 +1,236 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Algorithms Activity - Loulwa’s Pasta Recipe</title>
-  <style>
-    /* Happy Classroom Theme — All-in-one */
-
-    *{box-sizing:border-box}
-    :root{
-      --bg:#fff9fb; --card:#ffffff; --ink:#222; --muted:#6b7280;
-      --brand:#8b5cf6; --brand-2:#f472b6; --ok:#10b981;
-      --warn:#f59e0b; --ring:0 10px 30px rgba(139,92,246,.15);
-      --ring-2:0 10px 30px rgba(244,114,182,.15);
-    }
-    body{
-      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-      margin:0; padding:0;
-      background:
-        radial-gradient(1200px 400px at -10% -10%, #ffe4f0 0, transparent 50%),
-        radial-gradient(900px 400px at 110% -10%, #e9e0ff 0, transparent 50%),
-        var(--bg); color:var(--ink);
-    }
-    header,footer{
-      background:linear-gradient(90deg,#fef6ff,#fff7fb);
-      border-bottom:1px solid #f1e8ff; padding:18px 24px;
-    }
-    footer{border-top:1px solid #f1e8ff;border-bottom:none;color:var(--muted)}
-    h1{
-      margin:6px 0;font-weight:900;
-      background:linear-gradient(90deg,var(--brand),var(--brand-2));
-      -webkit-background-clip:text;background-clip:text;color:transparent;
-    }
-    h2{margin:4px 0 10px;font-weight:800}
-    main{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px;padding:16px}
-    .panel{
-      background:var(--card);border:1px solid #f1e8ff;border-radius:16px;
-      padding:16px;box-shadow:var(--ring);
-    }
-    .list{display:flex;flex-wrap:wrap;gap:10px}
-    .item{
-      background:#f4f0ff;border:1px dashed #c9b8ff;border-radius:999px;
-      padding:10px 14px;font-weight:700;cursor:pointer;
-      transition:.15s;box-shadow:var(--ring);
-    }
-    .item:hover{transform:translateY(-2px);background:#efe7ff}
-    .dropzone{
-      min-height:240px;border:2px dashed #e5d8ff;border-radius:16px;padding:14px;
-      display:flex;flex-direction:column;gap:10px;justify-content:flex-end;
-      background:linear-gradient(180deg,#fff,#fff7ff);
-      animation:softPulse 3s ease-in-out infinite;
-    }
-    @keyframes softPulse{
-      0%,100%{box-shadow:0 0 0 0 rgba(139,92,246,.10)}
-      50%{box-shadow:0 0 0 8px rgba(139,92,246,.03)}
-    }
-    .dz-item{
-      background:#fffdf5;border:1px solid #ffe4a3;border-radius:14px;
-      padding:10px 12px;font-weight:700;box-shadow:0 8px 20px rgba(245,158,11,.10);
-    }
-    .dz-item::before{content:"⬆ ";opacity:.5}
-    .actions{margin-top:10px;display:flex;gap:10px;flex-wrap:wrap}
-    button{
-      border:1px solid #e7defc;background:linear-gradient(180deg,#f5f1ff,#efe8ff);
-      border-radius:12px;padding:10px 14px;font-weight:800;cursor:pointer;
-      box-shadow:var(--ring);
-    }
-    button.primary{
-      background:linear-gradient(180deg,#a78bfa,#8b5cf6);color:#fff;border-color:#8b5cf6;
-      box-shadow:0 10px 30px rgba(139,92,246,.35);
-    }
-    textarea{
-      width:100%;min-height:110px;padding:10px;border-radius:12px;
-      border:1px solid #e7defc;background:#fff;box-shadow:0 4px 12px rgba(139,92,246,.06);
-    }
-    #result{
-      display:grid;place-items:center;min-height:120px;
-      background:#fff;border:1px dashed #f5d0fe;border-radius:16px;padding:8px;
-    }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Algorithms Activity — Click to Add</title>
+<style>
+/* ============ Happy Classroom Theme ============ */
+*{box-sizing:border-box}
+:root{
+  --bg:#fff9fb; --card:#fff; --ink:#222; --muted:#6b7280;
+  --violet:#8b5cf6; --pink:#f472b6; --green:#10b981; --amber:#f59e0b;
+  --ring:0 10px 30px rgba(139,92,246,.15); --ring2:0 10px 30px rgba(244,114,182,.15);
+}
+html,body{height:100%} body{
+  font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  margin:0; color:var(--ink);
+  background:
+    radial-gradient(1200px 400px at -10% -10%, #ffe4f0 0, transparent 50%),
+    radial-gradient(900px 400px at 110% -10%, #e9e0ff 0, transparent 50%),
+    var(--bg);
+}
+header,footer{
+  background:linear-gradient(90deg,#fef6ff,#fff7fb);
+  border-bottom:1px solid #f1e8ff; padding:18px 24px;
+}
+footer{border-top:1px solid #f1e8ff; border-bottom:none; color:var(--muted)}
+h1{margin:6px 0 2px;font-weight:900;letter-spacing:.2px;
+  background:linear-gradient(90deg,var(--violet),var(--pink));
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+h2{margin:6px 0 12px;font-weight:800}
+.main{
+  display:grid;grid-template-columns:repeat(12,1fr);gap:16px;padding:16px;align-items:start
+}
+.card{background:var(--card);border:1px solid #f1e8ff;border-radius:16px;padding:16px;box-shadow:var(--ring)}
+/* Tabs */
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.tab{border:1px solid #e7defc;background:#f5f1ff;border-radius:999px;padding:8px 12px;font-weight:800;cursor:pointer;box-shadow:var(--ring)}
+.tab.active{background:linear-gradient(180deg,#a78bfa,#8b5cf6);color:#fff;border-color:#8b5cf6;box-shadow:0 10px 30px rgba(139,92,246,.35)}
+/* Items list */
+.list{display:flex;flex-wrap:wrap;gap:10px;min-height:56px}
+.item{background:#f4f0ff;border:1px dashed #c9b8ff;border-radius:999px;padding:10px 14px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:10px;transition:.15s transform ease,.15s background ease,.15s box-shadow ease;box-shadow:var(--ring)}
+.item:hover{transform:translateY(-2px);background:#efe7ff}
+/* Dropzone */
+.drop{min-height:260px;border:2px dashed #e5d8ff;border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:10px;justify-content:flex-end;background:linear-gradient(180deg,#fff,#fff7ff);animation:softPulse 3s ease-in-out infinite}
+@keyframes softPulse{0%,100%{box-shadow:0 0 0 0 rgba(139,92,246,.08)}50%{box-shadow:0 0 0 8px rgba(139,92,246,.03)}}
+.step{background:#fffdf5;border:1px solid #ffe4a3;border-radius:14px;padding:10px 12px;display:flex;align-items:center;gap:8px;font-weight:700;box-shadow:0 8px 20px rgba(245,158,11,.10)}
+.step .x{margin-inline-start:auto;border:0;background:#ffe4e6;border-radius:8px;padding:4px 8px;cursor:pointer}
+.hint{color:#9aa0aa;text-align:center;margin:36px 0}
+/* Controls */
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:6px 0}
+button{border:1px solid #e7defc;background:linear-gradient(180deg,#f5f1ff,#efe8ff);border-radius:12px;padding:10px 14px;font-weight:800;cursor:pointer;box-shadow:var(--ring)}
+button.primary{background:linear-gradient(180deg,#a78bfa,#8b5cf6);color:#fff;border-color:#8b5cf6;box-shadow:0 10px 30px rgba(139,92,246,.35)}
+button.success{background:linear-gradient(180deg,#34d399,#10b981);color:#fff;border-color:#10b981;box-shadow:0 10px 30px rgba(16,185,129,.35)}
+select,input,textarea{border:1px solid #e7defc;border-radius:12px;padding:10px;background:#fff;box-shadow:0 4px 12px rgba(139,92,246,.06)}
+textarea{width:100%;min-height:110px}
+.copy-row{margin:6px 0}
+#result{display:grid;place-items:center;min-height:160px;background:#fff;border:1px dashed #f5d0fe;border-radius:16px;padding:8px}
+.badge{background:#fff0f6;border:1px solid #ffd6e7;color:#d6336c;padding:2px 8px;border-radius:999px;font-weight:700;font-size:12px}
+.small{font-size:12px;color:var(--muted)}
+/* Layout columns */
+.col-4{grid-column:span 4} .col-8{grid-column:span 8} .col-6{grid-column:span 6}
+@media (max-width:900px){.col-4,.col-6,.col-8{grid-column:span 12}}
+</style>
 </head>
 <body>
-  <header>
-    <h1>Algorithms Activity</h1>
-    <p>Click the steps below to add them in order (Bottom ↑ Top), then press "Generate Prompt".</p>
-  </header>
+<header>
+  <h1>Algorithms Activity — Click to Add</h1>
+  <p>Click steps to add them in order. Use the menu to switch between **Pasta, Morning Routine, ATM**.</p>
+</header>
 
-  <main>
-    <!-- Steps -->
-    <section class="panel">
-      <h2>Loulwa’s Pasta Recipe 🍝</h2>
-      <div id="ingredients" class="list">
-        <div class="item" data-en="Turn on the stove 🔥">Turn on the stove 🔥</div>
-        <div class="item" data-en="Boil water 💧">Boil water 💧</div>
-        <div class="item" data-en="Add pasta 🍝">Add pasta 🍝</div>
-        <div class="item" data-en="Add tomato paste 🍅">Add tomato paste 🍅</div>
-        <div class="item" data-en="Add spices 🌿">Add spices 🌿</div>
-        <div class="item" data-en="Add cheese 🧀">Add cheese 🧀</div>
-      </div>
-      <div class="actions"><button id="reset">Reset</button></div>
-    </section>
+<section class="main">
+  <!-- Left: Library -->
+  <section class="card col-6">
+    <h2>Step Library <span class="badge">choose a set</span></h2>
+    <div class="tabs">
+      <button class="tab active" data-set="pasta">🍝 Loulwa’s Pasta</button>
+      <button class="tab" data-set="morning">☀️ Morning Routine</button>
+      <button class="tab" data-set="atm">🏧 ATM Steps</button>
+    </div>
+    <div id="library" class="list" aria-label="steps list"></div>
+    <div class="row">
+      <button id="reset">Reset</button>
+    </div>
+  </section>
 
-    <!-- Order -->
-    <section class="panel dropzone-panel">
-      <h2>Final Order (Bottom ↑ Top)</h2>
-      <div id="dropzone" class="dropzone">
-        <p class="hint">Click steps above to add them here</p>
-      </div>
-      <div class="actions">
-        <button id="generatePrompt" class="primary">Generate Prompt</button>
-        <button id="clearDropzone">Clear</button>
-      </div>
-    </section>
+  <!-- Middle: Final order -->
+  <section class="card col-6">
+    <h2>Final Order <span class="small">(from bottom ↑ to top)</span></h2>
+    <div id="dropzone" class="drop">
+      <p class="hint">Click steps in the library to add them here.</p>
+    </div>
+    <div class="row">
+      <button id="clear" >Clear</button>
+      <button id="generate" class="primary">Generate Prompt</button>
+    </div>
+  </section>
 
-    <!-- Prompt -->
-    <section class="panel">
-      <h2>Generated Prompt</h2>
-      <textarea id="promptEn" readonly></textarea>
-      <div class="actions"><button class="copy" data-target="promptEn">Copy EN</button></div>
-    </section>
+  <!-- Prompt -->
+  <section class="card col-12">
+    <h2>Generated Prompt</h2>
+    <textarea id="prompt" readonly></textarea>
+    <div class="row">
+      <button id="copy" class="success">Copy Prompt</button>
+      <a id="toChatGPT" class="primary" style="text-decoration:none;display:inline-block" target="_blank"
+         href="https://chat.openai.com/">
+        Open in ChatGPT (Image)
+      </a>
+      <span class="small">Paste the prompt there to generate an image.</span>
+    </div>
+    <div id="result"></div>
+  </section>
+</section>
 
-    <!-- Result -->
-    <section class="panel"><h2>Result</h2><div id="result"></div></section>
-  </main>
+<footer>
+  <p>Examples included: <strong>Loulwa’s Pasta Recipe</strong>, <strong>Morning Routine</strong>, <strong>ATM Steps</strong>.</p>
+</footer>
 
-  <footer><p>© Classroom demo — Loulwa’s Pasta Recipe</p></footer>
+<script>
+/* ---------- Data sets ---------- */
+const DATA = {
+  pasta: {
+    title: "Loulwa’s Pasta Recipe",
+    visual: "cooking pasta",
+    steps: [
+      "Turn on the stove 🔥",
+      "Boil water 💧",
+      "Add pasta 🍝",
+      "Add tomato paste 🍅",
+      "Add spices 🌿",
+      "Add cheese 🧀"
+    ]
+  },
+  morning: {
+    title: "Morning Routine",
+    visual: "a simple morning routine",
+    steps: [
+      "Wake up ⏰",
+      "Make the bed 🛏️",
+      "Brush teeth 🪥",
+      "Wash face 💧",
+      "Have breakfast 🥣",
+      "Go to school 🎒"
+    ]
+  },
+  atm: {
+    title: "ATM Steps",
+    visual: "using an ATM",
+    steps: [
+      "Insert card 💳",
+      "Choose language 🌐",
+      "Enter PIN 🔢",
+      "Select withdrawal 💵",
+      "Enter amount ✍️",
+      "Take cash and card ✅"
+    ]
+  }
+};
 
-  <script>
-    const ingredients = document.getElementById('ingredients');
-    const dropzone = document.getElementById('dropzone');
-    const resetBtn = document.getElementById('reset');
-    const clearBtn = document.getElementById('clearDropzone');
-    const genBtn = document.getElementById('generatePrompt');
-    const promptEn = document.getElementById('promptEn');
-    const copyBtn = document.querySelector('.copy');
-    const result = document.getElementById('result');
+/* ---------- Elements ---------- */
+const tabs = document.querySelectorAll('.tab');
+const library = document.getElementById('library');
+const dropzone = document.getElementById('dropzone');
+const resetBtn = document.getElementById('reset');
+const clearBtn = document.getElementById('clear');
+const genBtn = document.getElementById('generate');
+const promptBox = document.getElementById('prompt');
+const copyBtn = document.getElementById('copy');
+let currentSet = 'pasta';
 
-    // Click to add
-    ingredients.addEventListener('click', (e)=>{
-      if(e.target.classList.contains('item')){
-        const step=document.createElement('div');
-        step.className='dz-item';
-        step.textContent=e.target.dataset.en;
-        dropzone.querySelector('.hint')?.remove();
-        dropzone.appendChild(step);
-      }
-    });
+/* ---------- Render Library ---------- */
+function renderLibrary(){
+  library.innerHTML = '';
+  DATA[currentSet].steps.forEach(step => {
+    const el = document.createElement('div');
+    el.className = 'item';
+    el.textContent = step;
+    el.title = 'Click to add';
+    el.addEventListener('click', ()=> addStep(step));
+    library.appendChild(el);
+  });
+}
+tabs.forEach(t=>{
+  t.addEventListener('click', ()=>{
+    tabs.forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    currentSet = t.dataset.set;
+    renderLibrary();
+  });
+});
+renderLibrary();
 
-    // Reset
-    resetBtn.addEventListener('click', ()=>{
-      document.querySelectorAll('.dz-item').forEach(el=>el.remove());
-      if(!dropzone.querySelector('.hint')){
-        const p=document.createElement('p');
-        p.className='hint';p.textContent='Click steps above to add them here';
-        dropzone.appendChild(p);
-      }
-      promptEn.value=''; result.innerHTML='';
-    });
+/* ---------- Dropzone behavior ---------- */
+function addStep(text){
+  dropzone.querySelector('.hint')?.remove();
+  const el = document.createElement('div');
+  el.className = 'step';
+  el.innerHTML = `<span>${text}</span> <button class="x" title="remove">✖</button>`;
+  el.querySelector('.x').addEventListener('click', ()=> el.remove());
+  dropzone.appendChild(el);
+}
+resetBtn.addEventListener('click', ()=>{
+  document.querySelectorAll('.step').forEach(e=>e.remove());
+  if(!dropzone.querySelector('.hint')){
+    const p=document.createElement('p'); p.className='hint';
+    p.textContent='Click steps in the library to add them here.'; dropzone.appendChild(p);
+  }
+  promptBox.value='';
+});
+clearBtn.addEventListener('click', ()=>{
+  document.querySelectorAll('.step').forEach(e=>e.remove());
+  if(!dropzone.querySelector('.hint')){
+    const p=document.createElement('p'); p.className='hint';
+    p.textContent='Click steps in the library to add them here.'; dropzone.appendChild(p);
+  }
+});
 
-    clearBtn.addEventListener('click', ()=>{
-      document.querySelectorAll('.dz-item').forEach(el=>el.remove());
-      if(!dropzone.querySelector('.hint')){
-        const p=document.createElement('p');
-        p.className='hint';p.textContent='Click steps above to add them here';
-        dropzone.appendChild(p);
-      }
-    });
-
-    // Build prompt
-    function buildPrompt(){
-      const items=[...dropzone.querySelectorAll('.dz-item')];
-      if(items.length===0) return '';
-      const steps=items.map(i=>i.textContent);
-      return `Create a classroom-friendly illustration of cooking pasta, with these steps in order (bottom to top): ${steps.join(', ')}. Use simple icons, clean layout, neutral background.`;
-    }
-    genBtn.addEventListener('click', ()=>{
-      const p=buildPrompt();
-      promptEn.value=p;
-      result.innerHTML='Prompt generated ✅';
-    });
-
-    // Copy
-    copyBtn.addEventListener('click', ()=>{
-      promptEn.select(); document.execCommand('copy');
-      copyBtn.textContent='Copied ✓'; setTimeout(()=>copyBtn.textContent='Copy EN',1000);
-    });
-  </script>
+/* ---------- Prompt ---------- */
+function buildPrompt(){
+  const items = [...dropzone.querySelectorAll('.step span')].map(s=>s.textContent);
+  if(items.length===0) return '';
+  const context = DATA[currentSet].visual;
+  return `Create a clean, classroom-friendly storyboard/illustration of ${context}. Show the steps from bottom to top in this exact order: ${items.join(', ')}. Use simple icons, even spacing, soft lighting, and a neutral background. No hands, no extra decorations. High resolution.`;
+}
+genBtn.addEventListener('click', ()=>{
+  const p = buildPrompt();
+  promptBox.value = p || 'Add steps first, then press "Generate Prompt".';
+  document.getElementById('result').textContent = p ? 'Prompt generated ✓' : '';
+});
+copyBtn.addEventListener('click', ()=>{
+  promptBox.select(); document.execCommand('copy');
+  copyBtn.textContent='Copied ✓'; setTimeout(()=>copyBtn.textContent='Copy Prompt',900);
+});
+</script>
 </body>
 </html>
