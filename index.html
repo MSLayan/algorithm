@@ -3,101 +3,122 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Algorithms Activity — Click to Add</title>
+<title>Algorithms Activity — One Row</title>
 <style>
-/* ============ Happy Classroom Theme ============ */
+/* ===== Happy Classroom — One-Row Layout ===== */
 *{box-sizing:border-box}
 :root{
   --bg:#fff9fb; --card:#fff; --ink:#222; --muted:#6b7280;
   --violet:#8b5cf6; --pink:#f472b6; --green:#10b981; --amber:#f59e0b;
-  --ring:0 10px 30px rgba(139,92,246,.15); --ring2:0 10px 30px rgba(244,114,182,.15);
+  --ring:0 10px 30px rgba(139,92,246,.15);
 }
-html,body{height:100%} body{
+html,body{height:100%}
+body{
   font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
   margin:0; color:var(--ink);
   background:
     radial-gradient(1200px 400px at -10% -10%, #ffe4f0 0, transparent 50%),
     radial-gradient(900px 400px at 110% -10%, #e9e0ff 0, transparent 50%),
     var(--bg);
+  overflow:hidden; /* no vertical scroll */
 }
-header,footer{
+header{
   background:linear-gradient(90deg,#fef6ff,#fff7fb);
-  border-bottom:1px solid #f1e8ff; padding:18px 24px;
+  border-bottom:1px solid #f1e8ff; padding:14px 20px;
 }
-footer{border-top:1px solid #f1e8ff; border-bottom:none; color:var(--muted)}
-h1{margin:6px 0 2px;font-weight:900;letter-spacing:.2px;
+h1{margin:0 0 4px;font-weight:900;letter-spacing:.2px;
   background:linear-gradient(90deg,var(--violet),var(--pink));
   -webkit-background-clip:text;background-clip:text;color:transparent}
-h2{margin:6px 0 12px;font-weight:800}
+header p{margin:0;color:var(--muted)}
+
 .main{
-  display:grid;grid-template-columns:repeat(12,1fr);gap:16px;padding:16px;align-items:start
+  display:flex; gap:14px; padding:14px; height:calc(100vh - 74px);
+  overflow-x:auto; overflow-y:hidden; scroll-snap-type:x mandatory;
 }
-.card{background:var(--card);border:1px solid #f1e8ff;border-radius:16px;padding:16px;box-shadow:var(--ring)}
-/* Tabs */
-.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
-.tab{border:1px solid #e7defc;background:#f5f1ff;border-radius:999px;padding:8px 12px;font-weight:800;cursor:pointer;box-shadow:var(--ring)}
-.tab.active{background:linear-gradient(180deg,#a78bfa,#8b5cf6);color:#fff;border-color:#8b5cf6;box-shadow:0 10px 30px rgba(139,92,246,.35)}
-/* Items list */
-.list{display:flex;flex-wrap:wrap;gap:10px;min-height:56px}
-.item{background:#f4f0ff;border:1px dashed #c9b8ff;border-radius:999px;padding:10px 14px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:10px;transition:.15s transform ease,.15s background ease,.15s box-shadow ease;box-shadow:var(--ring)}
-.item:hover{transform:translateY(-2px);background:#efe7ff}
-/* Dropzone */
-.drop{min-height:260px;border:2px dashed #e5d8ff;border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:10px;justify-content:flex-end;background:linear-gradient(180deg,#fff,#fff7ff);animation:softPulse 3s ease-in-out infinite}
-@keyframes softPulse{0%,100%{box-shadow:0 0 0 0 rgba(139,92,246,.08)}50%{box-shadow:0 0 0 8px rgba(139,92,246,.03)}}
-.step{background:#fffdf5;border:1px solid #ffe4a3;border-radius:14px;padding:10px 12px;display:flex;align-items:center;gap:8px;font-weight:700;box-shadow:0 8px 20px rgba(245,158,11,.10)}
+.card{
+  background:var(--card); border:1px solid #f1e8ff; border-radius:16px;
+  padding:12px; box-shadow:var(--ring); min-width:380px; max-width:420px;
+  height:100%; display:flex; flex-direction:column; gap:10px; scroll-snap-align:start;
+}
+h2{margin:2px 0 6px; font-weight:800}
+
+.tabs{display:flex;gap:6px;flex-wrap:wrap}
+.tab{border:1px solid #e7defc;background:#f5f1ff;border-radius:999px;padding:6px 10px;font-weight:800;cursor:pointer}
+.tab.active{background:linear-gradient(180deg,#a78bfa,#8b5cf6);color:#fff;border-color:#8b5cf6}
+
+.list{display:flex;flex-wrap:wrap;gap:8px;align-content:flex-start;overflow:auto}
+.item{
+  background:#f4f0ff; border:1px dashed #c9b8ff; border-radius:999px;
+  padding:8px 10px; font-weight:700; cursor:pointer;
+}
+.item:hover{filter:brightness(.98)}
+
+.drop{
+  flex:1; min-height:0;
+  border:2px dashed #e5d8ff; border-radius:16px; padding:10px;
+  display:flex; flex-direction:column; gap:8px; justify-content:flex-end;
+  background:linear-gradient(180deg,#fff,#fff7ff);
+  overflow:auto;
+}
+.step{
+  background:#fffdf5; border:1px solid #ffe4a3; border-radius:12px; padding:8px 10px;
+  display:flex; align-items:center; gap:8px; font-weight:700;
+}
 .step .x{margin-inline-start:auto;border:0;background:#ffe4e6;border-radius:8px;padding:4px 8px;cursor:pointer}
-.hint{color:#9aa0aa;text-align:center;margin:36px 0}
-/* Controls */
-.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:6px 0}
-button{border:1px solid #e7defc;background:linear-gradient(180deg,#f5f1ff,#efe8ff);border-radius:12px;padding:10px 14px;font-weight:800;cursor:pointer;box-shadow:var(--ring)}
-button.primary{background:linear-gradient(180deg,#a78bfa,#8b5cf6);color:#fff;border-color:#8b5cf6;box-shadow:0 10px 30px rgba(139,92,246,.35)}
-button.success{background:linear-gradient(180deg,#34d399,#10b981);color:#fff;border-color:#10b981;box-shadow:0 10px 30px rgba(16,185,129,.35)}
-select,input,textarea{border:1px solid #e7defc;border-radius:12px;padding:10px;background:#fff;box-shadow:0 4px 12px rgba(139,92,246,.06)}
-textarea{width:100%;min-height:110px}
-.copy-row{margin:6px 0}
-#result{display:grid;place-items:center;min-height:160px;background:#fff;border:1px dashed #f5d0fe;border-radius:16px;padding:8px}
-.badge{background:#fff0f6;border:1px solid #ffd6e7;color:#d6336c;padding:2px 8px;border-radius:999px;font-weight:700;font-size:12px}
+
+.hint{color:#9aa0aa;text-align:center;margin:24px 0}
+
+.row{display:flex;gap:8px;flex-wrap:wrap}
+button{
+  border:1px solid #e7defc;background:linear-gradient(180deg,#f5f1ff,#efe8ff);
+  border-radius:12px;padding:8px 12px;font-weight:800;cursor:pointer
+}
+button.primary{background:linear-gradient(180deg,#a78bfa,#8b5cf6);color:#fff;border-color:#8b5cf6}
+button.success{background:linear-gradient(180deg,#34d399,#10b981);color:#fff;border-color:#10b981}
+
+textarea{
+  width:100%; flex:1; min-height:0; height:150px;
+  border:1px solid #e7defc; border-radius:12px; padding:10px; background:#fff; resize:vertical;
+}
+
 .small{font-size:12px;color:var(--muted)}
-/* Layout columns */
-.col-4{grid-column:span 4} .col-8{grid-column:span 8} .col-6{grid-column:span 6}
-@media (max-width:900px){.col-4,.col-6,.col-8{grid-column:span 12}}
 </style>
 </head>
 <body>
 <header>
   <h1>Algorithms Activity — Click to Add</h1>
-  <p>Click steps to add them in order. Use the menu to switch between **Pasta, Morning Routine, ATM**.</p>
+  <p>Click steps to add them in order. Use the tabs to switch between Pasta, Morning Routine, and ATM.</p>
 </header>
 
-<section class="main">
-  <!-- Left: Library -->
-  <section class="card col-6">
-    <h2>Step Library <span class="badge">choose a set</span></h2>
+<section class="main" aria-label="one-row-canvas">
+  <!-- 1) Library -->
+  <section class="card" aria-label="step-library">
+    <h2>Step Library</h2>
     <div class="tabs">
       <button class="tab active" data-set="pasta">🍝 Loulwa’s Pasta</button>
       <button class="tab" data-set="morning">☀️ Morning Routine</button>
       <button class="tab" data-set="atm">🏧 ATM Steps</button>
     </div>
-    <div id="library" class="list" aria-label="steps list"></div>
+    <div id="library" class="list" style="flex:1; min-height:0"></div>
     <div class="row">
       <button id="reset">Reset</button>
     </div>
   </section>
 
-  <!-- Middle: Final order -->
-  <section class="card col-6">
-    <h2>Final Order <span class="small">(from bottom ↑ to top)</span></h2>
+  <!-- 2) Final order -->
+  <section class="card" aria-label="final-order">
+    <h2>Final Order <span class="small">(Arrange steps from start → end)</span></h2>
     <div id="dropzone" class="drop">
       <p class="hint">Click steps in the library to add them here.</p>
     </div>
     <div class="row">
-      <button id="clear" >Clear</button>
+      <button id="clear">Clear</button>
       <button id="generate" class="primary">Generate Prompt</button>
     </div>
   </section>
 
-  <!-- Prompt -->
-  <section class="card col-12">
+  <!-- 3) Prompt -->
+  <section class="card" aria-label="prompt-panel">
     <h2>Generated Prompt</h2>
     <textarea id="prompt" readonly></textarea>
     <div class="row">
@@ -108,13 +129,9 @@ textarea{width:100%;min-height:110px}
       </a>
       <span class="small">Paste the prompt there to generate an image.</span>
     </div>
-    <div id="result"></div>
+    <div id="result" class="small"></div>
   </section>
 </section>
-
-<footer>
-  <p>Examples included: <strong>Loulwa’s Pasta Recipe</strong>, <strong>Morning Routine</strong>, <strong>ATM Steps</strong>.</p>
-</footer>
 
 <script>
 /* ---------- Data sets ---------- */
@@ -199,23 +216,18 @@ function addStep(text){
   el.querySelector('.x').addEventListener('click', ()=> el.remove());
   dropzone.appendChild(el);
 }
-resetBtn.addEventListener('click', ()=>{
-  document.querySelectorAll('.step').forEach(e=>e.remove());
-  if(!dropzone.querySelector('.hint')){
-    const p=document.createElement('p'); p.className='hint';
-    p.textContent='Click steps in the library to add them here.'; dropzone.appendChild(p);
-  }
-  promptBox.value='';
-});
-clearBtn.addEventListener('click', ()=>{
-  document.querySelectorAll('.step').forEach(e=>e.remove());
-  if(!dropzone.querySelector('.hint')){
-    const p=document.createElement('p'); p.className='hint';
-    p.textContent='Click steps in the library to add them here.'; dropzone.appendChild(p);
-  }
-});
+resetBtn.addEventListener('click', ()=>{ clearSteps(true); promptBox.value=''; });
+clearBtn.addEventListener('click', ()=> clearSteps(false));
 
-/* ---------- Prompt ---------- */
+function clearSteps(addHint){
+  document.querySelectorAll('.step').forEach(e=>e.remove());
+  if(addHint && !dropzone.querySelector('.hint')){
+    const p=document.createElement('p'); p.className='hint';
+    p.textContent='Click steps in the library to add them here.'; dropzone.appendChild(p);
+  }
+}
+
+/* ---------- Prompt (kept as before) ---------- */
 function buildPrompt(){
   const items = [...dropzone.querySelectorAll('.step span')].map(s=>s.textContent);
   if(items.length===0) return '';
