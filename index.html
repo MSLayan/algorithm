@@ -1,248 +1,363 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Algorithms Activity</title>
-<style>
-/* ===== Happy Classroom — One-Row Layout ===== */
-*{box-sizing:border-box}
-:root{
-  --bg:#fff9fb; --card:#fff; --ink:#222; --muted:#6b7280;
-  --violet:#8b5cf6; --pink:#f472b6; --green:#10b981; --amber:#f59e0b;
-  --ring:0 10px 30px rgba(139,92,246,.15);
-}
-html,body{height:100%}
-body{
-  font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-  margin:0; color:var(--ink);
-  background:
-    radial-gradient(1200px 400px at -10% -10%, #ffe4f0 0, transparent 50%),
-    radial-gradient(900px 400px at 110% -10%, #e9e0ff 0, transparent 50%),
-    var(--bg);
-  overflow:hidden; /* no vertical scroll */
-}
-header{
-  background:linear-gradient(90deg,#fef6ff,#fff7fb);
-  border-bottom:1px solid #f1e8ff; padding:14px 20px;
-}
-h1{margin:0 0 4px;font-weight:900;letter-spacing:.2px;
-  background:linear-gradient(90deg,var(--violet),var(--pink));
-  -webkit-background-clip:text;background-clip:text;color:transparent}
-header p{margin:0;color:var(--muted)}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Algorithm Activity — Click & Drop</title>
+  <style>
+    /* Happy, modern classroom theme */
+    *{box-sizing:border-box}
+    :root{
+      --bg:#fff9fb;
+      --card:#ffffff;
+      --ink:#1f2937;
+      --muted:#6b7280;
+      --violet:#8b5cf6;
+      --pink:#f472b6;
+      --green:#10b981;
+      --amber:#f59e0b;
+      --ring:0 10px 30px rgba(139,92,246,.15);
+      --ring2:0 10px 30px rgba(244,114,182,.15);
+    }
+    html,body{height:100%}
+    body{
+      font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      margin:0; padding:0; color:var(--ink);
+      background:
+        radial-gradient(1200px 400px at -10% -10%, #ffe4f0 0, transparent 50%),
+        radial-gradient(900px 400px at 110% -10%, #e9e0ff 0, transparent 50%),
+        var(--bg);
+    }
+    header,footer{
+      background: linear-gradient(90deg, #fef6ff, #fff7fb);
+      border-bottom:1px solid #f1e8ff; padding:18px 24px;
+    }
+    footer{border-top:1px solid #f1e8ff; border-bottom:none; color:var(--muted)}
+    h1{
+      margin:6px 0 4px; font-weight:900; letter-spacing:.2px;
+      background: linear-gradient(90deg, var(--violet), var(--pink));
+      -webkit-background-clip:text; background-clip:text; color:transparent;
+    }
+    h2{margin:4px 0 8px; font-weight:800}
+    main{
+      display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+      gap:16px; padding:16px; align-items:start;
+    }
+    .panel{
+      background:var(--card); border:1px solid #f1e8ff; border-radius:16px;
+      padding:16px; box-shadow:var(--ring);
+    }
 
-.main{
-  display:flex; gap:14px; padding:14px; height:calc(100vh - 74px);
-  overflow-x:auto; overflow-y:hidden; scroll-snap-type:x mandatory;
-}
-.card{
-  background:var(--card); border:1px solid #f1e8ff; border-radius:16px;
-  padding:12px; box-shadow:var(--ring); min-width:380px; max-width:420px;
-  height:100%; display:flex; flex-direction:column; gap:10px; scroll-snap-align:start;
-}
-h2{margin:2px 0 6px; font-weight:800}
+    /* Scenario tabs */
+    .tabs{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px}
+    .tab{
+      background:#fff; border:1px solid #e7defc; padding:8px 12px; border-radius:999px;
+      font-weight:800; cursor:pointer; box-shadow:var(--ring);
+    }
+    .tab.active{
+      background:linear-gradient(180deg,#a78bfa,#8b5cf6);
+      color:#fff; border-color:#8b5cf6;
+      box-shadow:0 10px 30px rgba(139,92,246,.35);
+    }
 
-.tabs{display:flex;gap:6px;flex-wrap:wrap}
-.tab{border:1px solid #e7defc;background:#f5f1ff;border-radius:999px;padding:6px 10px;font-weight:800;cursor:pointer}
-.tab.active{background:linear-gradient(180deg,#a78bfa,#8b5cf6);color:#fff;border-color:#8b5cf6}
+    /* Ingredient list */
+    .list{display:flex;flex-wrap:wrap;gap:10px;min-height:56px}
+    .item{
+      background:#f4f0ff; border:1px dashed #c9b8ff; border-radius:999px;
+      padding:10px 14px; cursor:pointer; font-weight:800; display:flex; align-items:center; gap:10px;
+      box-shadow:var(--ring); transition:.15s transform ease,.15s background ease;
+    }
+    .item:hover{transform:translateY(-2px); background:#efe7ff}
+    .emoji{
+      width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-size:18px;
+      background:#ffffff;border:1px solid #e9ddff; box-shadow:var(--ring2);
+    }
 
-.list{display:flex;flex-wrap:wrap;gap:8px;align-content:flex-start;overflow:auto}
-.item{
-  background:#f4f0ff; border:1px dashed #c9b8ff; border-radius:999px;
-  padding:8px 10px; font-weight:700; cursor:pointer;
-}
-.item:hover{filter:brightness(.98)}
+    /* Stack (bottom -> top) */
+    .stack{
+      min-height:240px; border:2px dashed #e5d8ff; border-radius:16px; padding:14px;
+      display:flex; flex-direction:column; gap:10px; justify-content:flex-end;
+      background:linear-gradient(180deg,#fff,#fff7ff); position:relative;
+      animation:softPulse 3s ease-in-out infinite;
+    }
+    @keyframes softPulse{
+      0%,100%{ box-shadow:0 0 0 0 rgba(139,92,246,.10) }
+      50%{ box-shadow:0 0 0 8px rgba(139,92,246,.03) }
+    }
+    .hint{color:#9aa0aa; text-align:center; margin:36px 0}
+    .layer{
+      background:#fffdf5; border:1px solid #ffe4a3; border-radius:14px; padding:10px 12px;
+      display:flex; align-items:center; justify-content:space-between; gap:10px; font-weight:800;
+      box-shadow:0 8px 20px rgba(245,158,11,.10);
+    }
+    .controls{display:flex; gap:6px}
+    .btn{
+      border:1px solid #e7defc; background:#fff; border-radius:10px; padding:6px 8px; cursor:pointer;
+      font-weight:800; box-shadow:var(--ring); min-width:34px; text-align:center;
+    }
+    .btn:hover{filter:brightness(.98)}
+    .btn.up{background:#eef2ff}
+    .btn.down{background:#eefbf4}
+    .btn.del{background:#fff7ed}
 
-.drop{
-  flex:1; min-height:0;
-  border:2px dashed #e5d8ff; border-radius:16px; padding:10px;
-  display:flex; flex-direction:column; gap:8px; justify-content:flex-end;
-  background:linear-gradient(180deg,#fff,#fff7ff);
-  overflow:auto;
-}
-.step{
-  background:#fffdf5; border:1px solid #ffe4a3; border-radius:12px; padding:8px 10px;
-  display:flex; align-items:center; gap:8px; font-weight:700;
-}
-.step .x{margin-inline-start:auto;border:0;background:#ffe4e6;border-radius:8px;padding:4px 8px;cursor:pointer}
+    .actions{margin-top:10px; display:flex; gap:10px; flex-wrap:wrap}
+    button{
+      border:1px solid #e7defc; background:linear-gradient(180deg,#f5f1ff,#efe8ff);
+      border-radius:12px; padding:10px 14px; font-weight:900; cursor:pointer; box-shadow:var(--ring);
+    }
+    button.primary{
+      background:linear-gradient(180deg,#a78bfa,#8b5cf6); color:#fff; border-color:#8b5cf6;
+      box-shadow:0 10px 30px rgba(139,92,246,.35);
+    }
+    button.success{
+      background:linear-gradient(180deg,#34d399,#10b981); color:#fff; border-color:#10b981;
+      box-shadow:0 10px 30px rgba(16,185,129,.35);
+    }
 
-.hint{color:#9aa0aa;text-align:center;margin:24px 0}
+    label{display:block;margin:6px 0 4px}
+    textarea{
+      width:100%; min-height:110px; padding:10px; border-radius:12px; border:1px solid #e7defc; background:#fff;
+      box-shadow:0 4px 12px rgba(139,92,246,.06);
+    }
+    .copy-row{margin:6px 0}
+    #result{
+      display:grid; place-items:center; min-height:120px;
+      background:#fff; border:1px dashed #f5d0fe; border-radius:16px; padding:8px;
+    }
 
-.row{display:flex;gap:8px;flex-wrap:wrap}
-button{
-  border:1px solid #e7defc;background:linear-gradient(180deg,#f5f1ff,#efe8ff);
-  border-radius:12px;padding:8px 12px;font-weight:800;cursor:pointer
-}
-button.primary{background:linear-gradient(180deg,#a78bfa,#8b5cf6);color:#fff;border-color:#8b5cf6}
-button.success{background:linear-gradient(180deg,#34d399,#10b981);color:#fff;border-color:#10b981}
-
-textarea{
-  width:100%; flex:1; min-height:0; height:150px;
-  border:1px solid #e7defc; border-radius:12px; padding:10px; background:#fff; resize:vertical;
-}
-
-.small{font-size:12px;color:var(--muted)}
-</style>
+    /* Toast */
+    .toast{
+      position:fixed; inset-inline:0; bottom:20px; margin-inline:auto; width:max-content;
+      background:#111827; color:#fff; padding:10px 14px; border-radius:999px;
+      box-shadow:0 10px 30px rgba(0,0,0,.25); font-weight:800; opacity:0; transform:translateY(10px);
+      transition:.25s; z-index:9999
+    }
+    .toast.show{opacity:1; transform:translateY(0)}
+    .badge{background:#fff0f6;border:1px solid #ffd6e7;color:#d6336c;padding:2px 8px;border-radius:999px;font-weight:800;font-size:12px}
+  </style>
 </head>
 <body>
-<header>
-  <h1>Algorithms Activity — Click to Add</h1>
-  <p>Click steps to add them in order. Use the tabs to switch between Pasta, Morning Routine, and ATM.</p>
-</header>
+  <header>
+    <h1>Algorithm Activity — Click & Drop</h1>
+    <p>Click items to add them to the stack (bottom → top). Reorder with ↑/↓, remove with ✖. Then generate your prompt!</p>
+  </header>
 
-<section class="main" aria-label="one-row-canvas">
-  <!-- 1) Library -->
-  <section class="card" aria-label="step-library">
-    <h2>Step Library</h2>
-    <div class="tabs">
-      <button class="tab active" data-set="pasta">🍝 Loulwa’s Pasta</button>
-      <button class="tab" data-set="morning">☀️ Morning Routine</button>
-      <button class="tab" data-set="atm">🏧 ATM Steps</button>
-    </div>
-    <div id="library" class="list" style="flex:1; min-height:0"></div>
-    <div class="row">
-      <button id="reset">Reset</button>
-    </div>
-  </section>
+  <main>
+    <!-- Left: Scenarios + items -->
+    <section class="panel">
+      <h2>Choose a Scenario</h2>
+      <div class="tabs">
+        <button class="tab active" data-scenario="sandwich">🥪 Sandwich</button>
+        <button class="tab" data-scenario="lulu-pasta">🍝 Lulu Pasta</button>
+        <button class="tab" data-scenario="morning">🌞 Morning Routine</button>
+        <button class="tab" data-scenario="atm">🏧 ATM</button>
+      </div>
 
-  <!-- 2) Final order -->
-  <section class="card" aria-label="final-order">
-    <h2>Final Order <span class="small">(Arrange steps from start → end)</span></h2>
-    <div id="dropzone" class="drop">
-      <p class="hint">Click steps in the library to add them here.</p>
-    </div>
-    <div class="row">
-      <button id="clear">Clear</button>
-      <button id="generate" class="primary">Generate Prompt</button>
-    </div>
-  </section>
+      <h2>Click to Add</h2>
+      <div id="items" class="list" aria-label="Items list"></div>
 
-  <!-- 3) Prompt -->
-  <section class="card" aria-label="prompt-panel">
-    <h2>Generated Prompt</h2>
-    <textarea id="prompt" readonly></textarea>
-    <div class="row">
-      <button id="copy" class="success">Copy Prompt</button>
-      <a id="toChatGPT" class="primary" style="text-decoration:none;display:inline-block" target="_blank"
-         href="https://chat.openai.com/">
-        Open in ChatGPT (Image)
-      </a>
-      <span class="small">Paste the prompt there to generate an image.</span>
-    </div>
-    <div id="result" class="small"></div>
-  </section>
-</section>
+      <div class="actions">
+        <button id="reset">Reset</button>
+      </div>
+    </section>
 
-<script>
-/* ---------- Data sets ---------- */
-const DATA = {
-  pasta: {
-    title: "Loulwa’s Pasta Recipe",
-    visual: "cooking pasta",
-    steps: [
-      "Turn on the stove 🔥",
-      "Boil water 💧",
-      "Add pasta 🍝",
-      "Add tomato paste 🍅",
-      "Add spices 🌿",
-      "Add cheese 🧀"
-    ]
-  },
-  morning: {
-    title: "Morning Routine",
-    visual: "a simple morning routine",
-    steps: [
-      "Wake up ⏰",
-      "Make the bed 🛏️",
-      "Brush teeth 🪥",
-      "Wash face 💧",
-      "Have breakfast 🥣",
-      "Go to school 🎒"
-    ]
-  },
-  atm: {
-    title: "ATM Steps",
-    visual: "using an ATM",
-    steps: [
-      "Insert card 💳",
-      "Choose language 🌐",
-      "Enter PIN 🔢",
-      "Select withdrawal 💵",
-      "Enter amount ✍️",
-      "Take cash and card ✅"
-    ]
-  }
-};
+    <!-- Middle: Stack bottom->top -->
+    <section class="panel">
+      <h2>Stack (Bottom ↑ Top)</h2>
+      <div id="stack" class="stack" aria-label="Stack zone">
+        <p class="hint">Click items to add them here</p>
+      </div>
+      <div class="actions">
+        <button id="generate" class="primary">Generate Prompt</button>
+        <button id="clearStack">Clear</button>
+      </div>
+    </section>
 
-/* ---------- Elements ---------- */
-const tabs = document.querySelectorAll('.tab');
-const library = document.getElementById('library');
-const dropzone = document.getElementById('dropzone');
-const resetBtn = document.getElementById('reset');
-const clearBtn = document.getElementById('clear');
-const genBtn = document.getElementById('generate');
-const promptBox = document.getElementById('prompt');
-const copyBtn = document.getElementById('copy');
-let currentSet = 'pasta';
+    <!-- Right: Output -->
+    <section class="panel">
+      <h2>Prompt</h2>
+      <label>English (copy & use with your image model)</label>
+      <textarea id="promptEn" readonly></textarea>
+      <div class="copy-row">
+        <button id="copyEn">Copy EN</button>
+      </div>
 
-/* ---------- Render Library ---------- */
-function renderLibrary(){
-  library.innerHTML = '';
-  DATA[currentSet].steps.forEach(step => {
-    const el = document.createElement('div');
-    el.className = 'item';
-    el.textContent = step;
-    el.title = 'Click to add';
-    el.addEventListener('click', ()=> addStep(step));
-    library.appendChild(el);
-  });
-}
-tabs.forEach(t=>{
-  t.addEventListener('click', ()=>{
-    tabs.forEach(x=>x.classList.remove('active'));
-    t.classList.add('active');
-    currentSet = t.dataset.set;
-    renderLibrary();
-  });
-});
-renderLibrary();
+      <h2>Result (Optional use)</h2>
+      <div id="result">
+        <span class="badge">Tip</span>&nbsp;Paste the prompt into your favorite image generator.
+      </div>
+    </section>
+  </main>
 
-/* ---------- Dropzone behavior ---------- */
-function addStep(text){
-  dropzone.querySelector('.hint')?.remove();
-  const el = document.createElement('div');
-  el.className = 'step';
-  el.innerHTML = `<span>${text}</span> <button class="x" title="remove">✖</button>`;
-  el.querySelector('.x').addEventListener('click', ()=> el.remove());
-  dropzone.appendChild(el);
-}
-resetBtn.addEventListener('click', ()=>{ clearSteps(true); promptBox.value=''; });
-clearBtn.addEventListener('click', ()=> clearSteps(false));
+  <footer>
+    <p>© Classroom demo. Designed for click-and-drop algorithm practice.</p>
+  </footer>
 
-function clearSteps(addHint){
-  document.querySelectorAll('.step').forEach(e=>e.remove());
-  if(addHint && !dropzone.querySelector('.hint')){
-    const p=document.createElement('p'); p.className='hint';
-    p.textContent='Click steps in the library to add them here.'; dropzone.appendChild(p);
-  }
-}
+  <div class="toast" aria-live="polite"></div>
 
-/* ---------- Prompt (kept as before) ---------- */
-function buildPrompt(){
-  const items = [...dropzone.querySelectorAll('.step span')].map(s=>s.textContent);
-  if(items.length===0) return '';
-  const context = DATA[currentSet].visual;
-  return `Create a clean, classroom-friendly storyboard/illustration of ${context}. Show the steps from bottom to top in this exact order: ${items.join(', ')}. Use simple icons, even spacing, soft lighting, and a neutral background. No hands, no extra decorations. High resolution.`;
-}
-genBtn.addEventListener('click', ()=>{
-  const p = buildPrompt();
-  promptBox.value = p || 'Add steps first, then press "Generate Prompt".';
-  document.getElementById('result').textContent = p ? 'Prompt generated ✓' : '';
-});
-copyBtn.addEventListener('click', ()=>{
-  promptBox.select(); document.execCommand('copy');
-  copyBtn.textContent='Copied ✓'; setTimeout(()=>copyBtn.textContent='Copy Prompt',900);
-});
-</script>
+  <script>
+    // --- Scenario data (emoji + English labels) ---
+    const scenarios = {
+      "sandwich": [
+        { en:"bottom bun", emoji:"🍞" },
+        { en:"lettuce", emoji:"🥬" },
+        { en:"beef patty", emoji:"🍖" },
+        { en:"cheese slice", emoji:"🧀" },
+        { en:"tomato", emoji:"🍅" },
+        { en:"top bun", emoji:"🍞" }
+      ],
+      // Simple, classroom-friendly "Lulu Pasta" recipe
+      "lulu-pasta": [
+        { en:"pot with salted water", emoji:"🍲" },
+        { en:"add pasta", emoji:"🍝" },
+        { en:"boil until al dente", emoji:"⏱️" },
+        { en:"drain pasta", emoji:"🧺" },
+        { en:"pan with butter & garlic", emoji:"🧄" },
+        { en:"pour cream", emoji:"🥛" },
+        { en:"sprinkle parmesan", emoji:"🧀" },
+        { en:"toss pasta with sauce", emoji:"🍽️" },
+        { en:"serve in a bowl", emoji:"🥣" }
+      ],
+      // Morning routine (bottom → top = time order)
+      "morning": [
+        { en:"wake up", emoji:"⏰" },
+        { en:"make the bed", emoji:"🛏️" },
+        { en:"brush teeth", emoji:"🪥" },
+        { en:"wash face", emoji:"🚿" },
+        { en:"have breakfast", emoji:"🍳" },
+        { en:"pack backpack", emoji:"🎒" },
+        { en:"go to school", emoji:"🏫" }
+      ],
+      // ATM steps
+      "atm": [
+        { en:"insert card", emoji:"💳" },
+        { en:"select language", emoji:"🌐" },
+        { en:"enter PIN", emoji:"🔢" },
+        { en:"choose withdrawal", emoji:"🏧" },
+        { en:"enter amount", emoji:"💵" },
+        { en:"collect cash", emoji:"💸" },
+        { en:"take card & receipt", emoji:"🧾" }
+      ]
+    };
+
+    // --- Elements ---
+    const tabs = document.querySelectorAll('.tab');
+    const itemsList = document.getElementById('items');
+    const stack = document.getElementById('stack');
+    const promptEn = document.getElementById('promptEn');
+    const copyEn = document.getElementById('copyEn');
+    const resetBtn = document.getElementById('reset');
+    const clearStackBtn = document.getElementById('clearStack');
+    const generateBtn = document.getElementById('generate');
+    const toast = document.querySelector('.toast');
+
+    // --- Helpers ---
+    function showToast(msg='Prompt created!'){
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(()=> toast.classList.remove('show'), 1600);
+    }
+
+    function renderItems(scen){
+      itemsList.innerHTML = '';
+      scenarios[scen].forEach((it, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'item';
+        btn.innerHTML = `<span class="emoji">${it.emoji}</span> ${it.en}`;
+        btn.addEventListener('click', () => addToStack(it));
+        itemsList.appendChild(btn);
+      });
+    }
+
+    function ensureHint(){
+      if(!stack.querySelector('.layer') && !stack.querySelector('.hint')){
+        const p = document.createElement('p');
+        p.className = 'hint';
+        p.textContent = 'Click items to add them here';
+        stack.appendChild(p);
+      }
+    }
+
+    function addToStack(item){
+      stack.querySelector('.hint')?.remove();
+      const row = document.createElement('div');
+      row.className = 'layer';
+      row.dataset.en = item.en;
+      row.innerHTML = `
+        <div style="display:flex;align-items:center;gap:10px;font-weight:900">
+          <span class="emoji">${item.emoji}</span> ${item.en}
+        </div>
+        <div class="controls">
+          <button class="btn up" title="Move up">↑</button>
+          <button class="btn down" title="Move down">↓</button>
+          <button class="btn del" title="Remove">✖</button>
+        </div>
+      `;
+      // controls
+      const [up, down, del] = row.querySelectorAll('.btn');
+      up.addEventListener('click', () => moveLayer(row, -1));
+      down.addEventListener('click', () => moveLayer(row, +1));
+      del.addEventListener('click', () => { row.remove(); ensureHint(); });
+      stack.appendChild(row);
+    }
+
+    function moveLayer(el, dir){
+      if(dir < 0 && el.previousElementSibling){
+        stack.insertBefore(el, el.previousElementSibling);
+      } else if(dir > 0 && el.nextElementSibling){
+        stack.insertBefore(el.nextElementSibling, el);
+      }
+    }
+
+    function clearStack(){
+      stack.innerHTML = '';
+      ensureHint();
+    }
+
+    function buildPrompt(){
+      const layers = [...stack.querySelectorAll('.layer')];
+      if(!layers.length) return '';
+      const parts = layers.map(l => l.dataset.en);
+      const base = `Create a clean, classroom-friendly illustration of a process with clear, labeled-like layers (no actual text labels).`;
+      const order = ` Show the layers from bottom to top in this exact order: ${parts.join(', ')}.`;
+      const style = ` Use simple shapes, even spacing, soft lighting, and a neutral background. No hands, no utensils, no extra decorations. High resolution.`;
+      return base + order + style;
+    }
+
+    // --- Events ---
+    tabs.forEach(t => t.addEventListener('click', () => {
+      tabs.forEach(x => x.classList.remove('active'));
+      t.classList.add('active');
+      clearStack();
+      renderItems(t.dataset.scenario);
+    }));
+
+    resetBtn.addEventListener('click', () => {
+      clearStack();
+      const active = document.querySelector('.tab.active')?.dataset.scenario || 'sandwich';
+      renderItems(active);
+      promptEn.value = '';
+    });
+
+    clearStackBtn.addEventListener('click', clearStack);
+
+    copyEn.addEventListener('click', () => {
+      promptEn.select();
+      document.execCommand('copy');
+      showToast('Prompt copied!');
+    });
+
+    generateBtn.addEventListener('click', () => {
+      const p = buildPrompt();
+      promptEn.value = p;
+      showToast('Prompt created!');
+    });
+
+    // --- Init ---
+    (function init(){
+      ensureHint();
+      renderItems('sandwich');
+    })();
+  </script>
 </body>
 </html>
