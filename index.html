@@ -119,11 +119,6 @@
       width:100%; min-height:110px; padding:10px; border-radius:12px; border:1px solid #e7defc; background:#fff;
       box-shadow:0 4px 12px rgba(139,92,246,.06);
     }
-    .copy-row{margin:6px 0}
-    #result{
-      display:grid; place-items:center; min-height:120px;
-      background:#fff; border:1px dashed #f5d0fe; border-radius:16px; padding:8px;
-    }
 
     /* Toast */
     .toast{
@@ -134,6 +129,14 @@
     }
     .toast.show{opacity:1; transform:translateY(0)}
     .badge{background:#fff0f6;border:1px solid #ffd6e7;color:#d6336c;padding:2px 8px;border-radius:999px;font-weight:800;font-size:12px}
+
+    /* Link button */
+    .link-btn{
+      display:inline-block; text-decoration:none; font-weight:900; padding:10px 14px; border-radius:12px;
+      border:1px solid #e7defc; box-shadow:var(--ring);
+      background:linear-gradient(180deg,#a78bfa,#8b5cf6); color:#fff;
+    }
+    .muted{color:var(--muted); font-size:.95rem}
   </style>
 </head>
 <body>
@@ -173,19 +176,16 @@
       </div>
     </section>
 
-    <!-- Right: Output -->
+    <!-- Right: Output + ChatGPT link -->
     <section class="panel">
       <h2>Prompt</h2>
-      <label>English (copy & use with your image model)</label>
+      <label>English (copy & use)</label>
       <textarea id="promptEn" readonly></textarea>
-      <div class="copy-row">
+      <div class="actions">
         <button id="copyEn">Copy EN</button>
+        <a class="link-btn" href="https://chatgpt.com" target="_blank" rel="noopener noreferrer">Open ChatGPT</a>
       </div>
-
-      <h2>Result (Optional use)</h2>
-      <div id="result">
-        <span class="badge">Tip</span>&nbsp;Paste the prompt into your favorite image generator.
-      </div>
+      <p class="muted">After generating the prompt, click “Open ChatGPT”, paste it, and run.</p>
     </section>
   </main>
 
@@ -206,7 +206,6 @@
         { en:"tomato", emoji:"🍅" },
         { en:"top bun", emoji:"🍞" }
       ],
-      // Simple, classroom-friendly "Lulu Pasta" recipe
       "lulu-pasta": [
         { en:"pot with salted water", emoji:"🍲" },
         { en:"add pasta", emoji:"🍝" },
@@ -218,7 +217,6 @@
         { en:"toss pasta with sauce", emoji:"🍽️" },
         { en:"serve in a bowl", emoji:"🥣" }
       ],
-      // Morning routine (bottom → top = time order)
       "morning": [
         { en:"wake up", emoji:"⏰" },
         { en:"make the bed", emoji:"🛏️" },
@@ -228,7 +226,6 @@
         { en:"pack backpack", emoji:"🎒" },
         { en:"go to school", emoji:"🏫" }
       ],
-      // ATM steps
       "atm": [
         { en:"insert card", emoji:"💳" },
         { en:"select language", emoji:"🌐" },
@@ -260,7 +257,7 @@
 
     function renderItems(scen){
       itemsList.innerHTML = '';
-      scenarios[scen].forEach((it, idx) => {
+      scenarios[scen].forEach((it) => {
         const btn = document.createElement('button');
         btn.className = 'item';
         btn.innerHTML = `<span class="emoji">${it.emoji}</span> ${it.en}`;
@@ -293,7 +290,6 @@
           <button class="btn del" title="Remove">✖</button>
         </div>
       `;
-      // controls
       const [up, down, del] = row.querySelectorAll('.btn');
       up.addEventListener('click', () => moveLayer(row, -1));
       down.addEventListener('click', () => moveLayer(row, +1));
@@ -361,3 +357,4 @@
   </script>
 </body>
 </html>
+
